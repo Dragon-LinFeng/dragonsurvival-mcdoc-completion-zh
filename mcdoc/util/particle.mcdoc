@@ -1,0 +1,19 @@
+dispatch minecraft:particle["dragonsurvival:fire","dragonsurvival:large_fire","dragonsurvival:poison","dragonsurvival:large_poison","dragonsurvival:sun","dragonsurvival:large_sun","dragonsurvival:lightning","dragonsurvival:large_lightning",]
+    to struct DragonSurvival_Particle {
+        /// 粒子生命周期
+        duration: float,
+        /// 是否启用漩涡效果
+        swirls: boolean,
+    }
+
+dispatch minecraft:particle["dragonsurvival:treasure"] to struct DragonSurvival_ColorParticle {
+    red: float @ 0..1,
+    green: float @ 0..1,
+    blue: float @ 0..1,
+    /// 粒子缩放
+    scale: float @ 0.01..4.0,
+}
+
+dispatch minecraft:particle["dragonsurvival:sea_sweep"] to struct DragonSurvival_SeaSweepParticle {
+    quadSize: float,
+}

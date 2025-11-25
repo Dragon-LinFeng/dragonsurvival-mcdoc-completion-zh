@@ -1,0 +1,14 @@
+use ::java::world::entity::projectile::arrow::ArrowBase
+use super::super::super::data::dragonsurvival::projectile_data::GeneralData
+use super::super::super::data::dragonsurvival::projectile_data::GenericArrowData
+
+dispatch minecraft:entity[dragonsurvival:generic_arrow_entity] to struct GenericArrowEntity {
+    ...ArrowBase,
+    /// 弹射物等级
+    /// (复制自召唤该实体的技能等级)
+    projectile_level?: int,
+    /// 决定自定义弹射物的效果
+    general_data: GeneralData,
+    /// 决定自定义弹射物的外观
+    type_data: GenericArrowData,
+}

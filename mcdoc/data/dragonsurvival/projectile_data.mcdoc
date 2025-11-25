@@ -1,0 +1,460 @@
+use ::java::data::enchantment::effect::SpawnParticlesEntityEffect
+use ::java::data::loot::LootCondition
+use ::java::util::particle::Particle
+
+// ---------------------------------------------------------------------------------------------------------------------
+struct LevelBasedValueMap {
+    /// 等级依赖函数(https://zh.minecraft.wiki/w/魔咒数据格式/等级依赖函数)
+	type: #[id="enchantment_level_based_value_type"] string,
+	...minecraft:level_based_value[[type]],
+}
+
+type LevelBasedValue = (float | LevelBasedValueMap)
+
+// ---------------------------------------------------------------------------------------------------------------------
+dispatch minecraft:resource[dragonsurvival:projectile_data] to struct ProjectileData {
+    /// 决定自定义弹射物的效果
+    general_data: GeneralData,
+    /// 决定自定义弹射物的外观
+    /// - 若是`texture`+`piercing_level`则是自定义箭类实体
+    /// - 若是`resources`+`behaviour_data`则是自定义弹射物实体
+    type_data?: (
+        GenericArrowData |
+        GenericBallData |
+    ),
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+struct GeneralData {
+    /// 注册的自定义弹射物名称
+    name: #[projectile_data(definition=true)] string,
+    /// 击中方块时执行的效果
+    /// - 执行者: `server`
+    /// - 执行位置: 击中方块的方块中心
+    block_hit_effects: [ProjectileBlockEffect],
+    /// 击中任何东西都会执行的效果
+    /// - `world_effect`
+    ///   - `dragonsurvival:point`
+    ///      - `执行者`: 弹射物自身
+    ///      - `执行位置`: 弹射物击中判定成功时的位置(会出现在弹射物的轨迹上)
+    ///   - `dragonsurvival:area`
+    ///      - `执行者`: 弹射物自身
+    ///      - `执行位置`: 范围内所有复合的实体(不包括弹射物本身)
+    /// - `entity_effect`
+    ///   - `dragonsurvival:point`
+    ///     - 无任何效果
+    ///   - `dragonsurvival:area`
+    ///     - `执行者`: 范围内所有符合的实体(不包括弹射物本身)
+    ///     - `执行位置`: 弹射物击中判定成功时的位置(会出现在弹射物的轨迹上)
+    /// - `block_effect`
+    ///   - `dragonsurvival:point`
+    ///     - `执行者`: `server`
+    ///     - `执行位置`: 弹射物击中判定成功时的 `方块位置中心`(会出现在弹射物的轨迹上)
+    ///   - `dragonsurvival:area`
+    ///     - `执行者`: `server`
+    ///     - `执行位置`: 弹射物为中心范围内所有符合的方块中心
+    common_hit_effects: [ProjectileTargeting],
+    /// 击中实体的谓词判断(用于`entity_hit_effects`)
+    /// 具有施法者和目标之间的上下文，允许进行适当的盟友或敌人检查
+    /// 谓词(https://zh.minecraft.wiki/w/谓词)
+    entity_hit_condition: (LootCondition | Empty),
+    /// 击中实体时执行的效果
+    /// - 执行者：被击中的实体
+    /// - 执行位置：被击中的实体
+    entity_hit_effects: [ProjectileEntityEffect],
+    /// 弹射物未落地时，每tick都会执行的效果
+    /// - `world_effect`
+    ///   - `dragonsurvival:point`
+    ///      - `执行者`: 弹射物自身
+    ///      - `执行位置`: 弹射物击中判定成功时的位置(会出现在弹射物的轨迹上)
+    ///   - `dragonsurvival:area`
+    ///      - `执行者`: 弹射物自身
+    ///      - `执行位置`: 范围内所有复合的实体(不包括弹射物本身)
+    /// - `entity_effect`
+    ///   - `dragonsurvival:point`
+    ///     - 无任何效果
+    ///   - `dragonsurvival:area`
+    ///     - `执行者`: 范围内所有符合的实体(不包括弹射物本身)
+    ///     - `执行位置`: 弹射物击中判定成功时的位置(会出现在弹射物的轨迹上)
+    /// - `block_effect`
+    ///   - `dragonsurvival:point`
+    ///     - `执行者`: `server`
+    ///     - `执行位置`: 弹射物击中判定成功时的 `方块位置中心`(会出现在弹射物的轨迹上)
+    ///   - `dragonsurvival:area`
+    ///     - `执行者`: `server`
+    ///     - `执行位置`: 弹射物为中心范围内所有符合的方块中心
+    ticking_effects: [ProjectileTargeting],
+}
+
+struct Empty {}
+
+// --- 特殊执行器 --- //
+struct ProjectileTargeting {
+    /// 定义效果
+    general_data: ProjectileTargeting_GeneralData,
+    /// 目标选择类型
+    /// - `dragonsurvival:area` 以施法者为中心radius半径内的目标
+    /// - `dragonsurvival:point` 执行者当前位置
+    target_type: TargetingType,
+    ...dragonsurvival:projectile_targeting[[target_type]],
+}
+
+enum(string) TargetingType {
+    /// 以施法者为中心radius半径内的目标
+    Area    = "dragonsurvival:area",
+    /// 执行者当前位置
+    Point   = "dragonsurvival:point",
+}
+
+dispatch dragonsurvival:projectile_targeting[dragonsurvival:area] to struct AreaTarget {
+    /// 作用半径
+    radius: LevelBasedValue,
+    /// 粒子效果
+    particle_trail?: Particle,
+}
+
+struct ProjectileTargeting_GeneralData {
+    /// 定义将执行的效果列表
+    effects: [ProjectileTargeting_GeneralData_Effect],
+    /// 效果触发的频率(current_tick % rate == 0)
+    tick_rate?: int,
+    /// 效果触发的概率
+    chance?: float,
+}
+
+struct ProjectileTargeting_GeneralData_Effect {
+    /// 于以下键中三选一
+    /// - world_effect
+    /// - block_effect
+    /// - entity_effect
+    effect: (
+        ProjectileBlockEffect |
+        ProjectileEntityEffect |
+        ProjectileWorldEffect |
+    ),
+    /// 谓词(https://zh.minecraft.wiki/w/谓词)
+    condition?: LootCondition,
+}
+
+// --- 世界效果 --- //
+dispatch minecraft:resource[dragonsurvival:projectile_world_effect] to struct ProjectileWorldEffect {
+    /// 世界效果
+    /// 可用效果列表:
+    /// - `dragonsurvival:explosion` 造成爆炸
+    /// - `dragonsurvival:lightning` 召唤闪电
+    /// - `dragonsurvival:particle` 生成粒子
+    /// - `dragonsurvival:run_function` 运行函数
+    world_effect: ProjectileWorldEffectType,
+    ...dragonsurvival:projectile_entity_effect[[entity_effect]],
+    ...dragonsurvival:projectile_block_effect[[block_effect]],
+    ...dragonsurvival:projectile_world_effect[[world_effect]],
+}
+
+enum(string) ProjectileWorldEffectType {
+    /// 造成爆炸
+    Explosion       = "dragonsurvival:explosion",
+    /// 召唤闪电
+    Lightning       = "dragonsurvival:lightning",
+    /// 生成粒子
+    Particle        = "dragonsurvival:particle",
+    /// 运行函数
+    Run_Function    = "dragonsurvival:run_function",
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_world_effect[dragonsurvival:explosion] to struct ProjectileExplosionEffect {
+    /// 伤害类型(https://zh.minecraft.wiki/w/伤害类型定义格式)
+    damage_type: #[id="damage_type"] string,
+    /// 爆炸强度
+    explosion_power: LevelBasedValue,
+    /// 能产生火焰
+    fire: boolean,
+    /// 能破坏方块
+    break_blocks: boolean,
+    /// 能伤害自己
+    can_damage_self: boolean,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_world_effect[dragonsurvival:lightning] to struct ProjectileLightningWorldEffect {
+    /// 闪电数据
+    data: LightningHandler,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_world_effect[dragonsurvival:particle] to struct ProjectileWorldParticleEffect {
+    /// 粒子数据
+    particle_data: SpawnParticlesEntityEffect,// 我们有一个自定义对象，但CODEC看起来相同
+    /// 粒子数量
+    particle_count: LevelBasedValue,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_world_effect[dragonsurvival:run_function] to struct ProjectileWorldRunFunctionEffect {
+    /// Minecraft函数
+    function: #[id="function"] string,
+}
+
+// --- 方块效果 --- //
+dispatch minecraft:resource[dragonsurvival:projectile_block_effect] to struct ProjectileBlockEffect {
+    /// 方块效果
+    /// - `dragonsurvival:particle` 生成粒子
+    /// - `dragonsurvival:run_function` 运行函数
+    /// - `dragonsurvival:area_cloud` 生成药水云
+    block_effect: ProjectileBlockEffectType,
+    ...dragonsurvival:projectile_entity_effect[[entity_effect]],
+    ...dragonsurvival:projectile_block_effect[[block_effect]],
+    ...dragonsurvival:projectile_world_effect[[world_effect]],
+}
+
+enum(string) ProjectileBlockEffectType {
+    /// 生成粒子
+    Particle        = "dragonsurvival:particle",
+    /// 运行函数
+    Run_Function    = "dragonsurvival:run_function",
+    /// 生成药水云
+    Area_Cloud      = "dragonsurvival:area_cloud",
+}
+
+dispatch dragonsurvival:projectile_block_effect[dragonsurvival:particle] to struct ProjectileBlockParticleEffect {
+    /// 粒子数据
+    particle_data: SpawnParticlesEntityEffect,// 我们有一个自定义对象，但CODEC看起来相同
+    /// 粒子数量
+    particle_count: LevelBasedValue,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_block_effect[dragonsurvival:run_function] to struct ProjectileBlockRunFunctionEffect {
+    /// Minecraft函数
+    function: #[id="function"] string,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_block_effect[dragonsurvival:area_cloud] to struct ProjectileAreaCloudEffect {
+    /// 药水云将携带的药水效果
+    potion: PotionData,
+    /// 药水云的持续时间
+    duration: LevelBasedValue,
+    /// 药水云成功生成的概率
+    probability: double @ 0..1,
+    /// 药水云生效前的延迟时间
+    delay?: LevelBasedValue,
+    /// 药水云的作用半径
+    radius?: LevelBasedValue,
+    /// 粒子效果
+    particle: Particle
+}
+
+// --- 实体效果 --- //
+dispatch minecraft:resource[dragonsurvival:projectile_entity_effect] to struct ProjectileEntityEffect {
+    /// 实体效果
+    /// - `dragonsurvival:damage` 造成伤害
+    /// - `dragonsurvival:potion` 施加药水效果
+    /// - `dragonsurvival:lightning` 生成闪电
+    /// - `dragonsurvival:particle` 生成粒子
+    /// - `dragonsurvival:run_function` 运行函数
+    /// - `dragonsurvival:push` 推动实体
+    entity_effect: ProjectileEntityEffectType,
+    ...dragonsurvival:projectile_entity_effect[[entity_effect]],
+    ...dragonsurvival:projectile_block_effect[[block_effect]],
+    ...dragonsurvival:projectile_world_effect[[world_effect]],
+
+}
+
+enum(string) ProjectileEntityEffectType {
+    /// 造成伤害
+    Damage          = "dragonsurvival:damage",
+    /// 施加药水效果
+    Potion          = "dragonsurvival:potion",
+    /// 生成闪电
+    Lightning       = "dragonsurvival:lightning",
+    /// 生成粒子
+    Particle        = "dragonsurvival:particle",
+    /// 运行函数
+    Run_Function    = "dragonsurvival:run_function",
+    /// 推动实体
+    Push            = "dragonsurvival:push",
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:damage] to struct ProjectileDamageEffect {
+    /// 伤害类型(https://zh.minecraft.wiki/w/伤害类型定义格式)
+    damage_type: #[id="damage_type"] string,
+    /// 将造成的伤害
+    amount: LevelBasedValue,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:potion] to struct ProjectilePotionEffect {
+    /// 药水效果
+    potion: PotionData,
+}
+
+struct PotionData {
+    /// 一个药水列表
+    effects: (
+        #[id(registry="mob_effect", tags="allowed")] string |
+        [#[id="mob_effect"] string] |
+    ),
+    /// 效果等级
+    /// - 0=1级、1=2级、...
+    amplifier: LevelBasedValue,
+    /// 控制效果的持续时间(ticks)
+    duration: LevelBasedValue,
+    /// 控制效果触发的概率
+    /// (默认：1(100%))
+    probability?: LevelBasedValue,
+    /// 是否显示效果粒子
+    /// (默认：false)
+    effect_particles?: boolean,
+    /// 是否在HUD显示效果图标
+    /// (默认：true)
+    show_icon?: boolean
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:lightning] to struct ProjectileLightningEntityEffect {
+    /// 闪电数据
+    data: LightningHandler,
+}
+
+struct LightningHandler {
+    /// 能伤害自己
+    can_hurt_self: boolean,
+    /// 产生火焰
+    spawns_fire: boolean,
+    /// 忽略物品与经验球
+    ignores_items_and_experience: boolean,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:particle] to struct ProjectileEntityParticleEffect {
+    /// 粒子数据
+    particle_data: SpawnParticlesEntityEffect,// 我们有一个自定义对象，但CODEC看起来相同
+    /// 粒子数量
+    particle_count: LevelBasedValue,
+}
+
+// ----- # ----- //
+dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:run_function] to struct ProjectileEntityRunFunctionEffect {
+    /// Minecraft函数
+    function: #[id="function"] string,
+}
+
+// ----- # ----- //
+
+dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:push] to struct ProjectileEntityPushEffect {
+    /// 决定施加推力的方向
+    target_direction: TargetDirection,
+    /// 控制施加推力的大小(可为负数)
+    push_force: LevelBasedValue,
+}
+
+struct TargetDirection {
+    /// 朝向
+    /// - `looking_at` 视线方向
+    /// - `towards_entity` 朝向实体方向
+    /// - `up` 上
+    /// - `down` 下
+    /// - `east` 东
+    /// - `west` 西
+    /// - `south` 南
+    /// - `north` 北
+    direction: DirectionType
+}
+
+enum(string) DirectionType {
+    /// 视线方向
+    LookingAt       = "looking_at",
+    /// 朝向实体方向
+    TowardsEntity   = "towards_entity",
+    /// 上
+    Up              = "up",
+    /// 下
+    Down            = "down",
+    /// 东
+    East            = "east",
+    /// 西
+    West            = "west",
+    /// 南
+    South           = "south",
+    /// 北
+    North           = "north",
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+struct GenericArrowData {
+    /// 贴图数据
+    texture: LevelBasedResource,
+    /// 箭类实体能射穿实体的数量
+    /// 此值将会复制到同名nbt中
+    piercing_level?: LevelBasedValue,
+}
+
+struct GenericBallData {
+    /// 贴图数据
+    resources: LevelBasedResource,
+    /// 基本数据
+    behaviour_data: BehaviourData,
+    /// 当实体消失时将会执行的效果
+    /// - `world_effect`
+    ///   - `dragonsurvival:point`
+    ///      - `执行者`: 弹射物自身
+    ///      - `执行位置`: 弹射物击中判定成功时的位置(会出现在弹射物的轨迹上)
+    ///   - `dragonsurvival:area`
+    ///      - `执行者`: 弹射物自身
+    ///      - `执行位置`: 范围内所有复合的实体(不包括弹射物本身)
+    /// - `entity_effect`
+    ///   - `dragonsurvival:point`
+    ///     - 无任何效果
+    ///   - `dragonsurvival:area`
+    ///     - `执行者`: 范围内所有符合的实体(不包括弹射物本身)
+    ///     - `执行位置`: 弹射物击中判定成功时的位置(会出现在弹射物的轨迹上)
+    /// - `block_effect`
+    ///   - `dragonsurvival:point`
+    ///     - `执行者`: `server`
+    ///     - `执行位置`: 弹射物击中判定成功时的 `方块位置中心`(会出现在弹射物的轨迹上)
+    ///   - `dragonsurvival:area`
+    ///     - `执行者`: `server`
+    ///     - `执行位置`: 弹射物为中心范围内所有符合的方块中心
+    on_destroy_effects?: [ProjectileTargeting],
+    /// 拖尾粒子
+    trail_particle?: Particle,
+}
+
+// ----- # ----- //
+struct BehaviourData {
+    /// 碰撞箱宽度
+    width: LevelBasedValue,
+    /// 碰撞箱高度
+    height: LevelBasedValue,
+    /// 最大弹跳的次数(撞到方块或实体后反弹，若达到最大限制则尝试滞留)
+    max_bounces?: LevelBasedValue,
+    /// 最大滞留时间(碰撞后停止移动的时间，若达到最大限制则尝试移除实体)
+    /// (单位：ticks)
+    max_lingering_ticks?: LevelBasedValue,
+    /// 最大移动距离(若达到最大限制则尝试移除实体)
+    max_movement_distance: LevelBasedValue,
+    /// 最大存在时间(若达到最大限制则尝试移除实体)
+    /// (单位：ticks)
+    max_lifespan: LevelBasedValue,
+}
+
+// ----- # ----- //
+struct LevelBasedResource {
+    /// 根据等级决定将使用的贴图
+    /// 空数据可能导致游戏崩溃
+    texture_entries: [ResourceLocation] @ 1..,
+}
+
+// ----- # ----- //
+struct ResourceLocation {
+    /// 指定从哪个等级开始使用对应的贴图
+    /// (该条目定义了一个阶梯函数，每个`from_level`决定了对应区间的起点)
+    from_level: int @ -1..,
+    /// 该等级弹射物将使用的贴图(必须放在'assets/<命名空间>/textures/entity/projectiles'目录中)
+    /// (需要省略'textures/entity/projectiles'路径和'.png'文件扩展名)
+    texture_resource: #[id(registry="texture",path="entity/projectiles/")] string,
+
+}

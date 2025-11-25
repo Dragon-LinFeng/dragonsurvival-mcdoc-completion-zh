@@ -1,0 +1,8 @@
+dispatch minecraft:resource[dragonsurvival:custom_soul_icons] to struct CustomSoulIcons {
+    /// 指定使用该龙魂图标的物种id
+    species: #[id="dragonsurvival:dragon_species"] string,
+    /// 指定使用该龙魂图标的物种阶段id
+    stage?: #[id="dragonsurvival:dragon_stage"] string,
+    /// 指定龙魂将使用的烘焙模型(https://zh.minecraft.wiki/w/烘焙模型)
+    model: #[id="model"] string,
+}

@@ -1,0 +1,188 @@
+{
+    "type": "root",
+    "children": {
+        "dragon-ability": {
+            "type": "literal",
+            "children": {
+                "remove": {
+                    "type": "literal",
+                    "children": {
+                        "targets": {
+                            "type": "argument",
+                            "parser": "minecraft:entity",
+                            "properties": {
+                                "amount": "multiple",
+                                "type": "players"
+                            },
+                            "children": {
+                                "dragon_ability": {
+                                    "type": "argument",
+                                    "parser": "minecraft:resource",
+                                    "properties": {
+                                        "registry": "dragonsurvival:dragon_ability"
+                                    },
+                                    "executable": true
+                                }
+                            },
+                            "executable": true
+                        }
+                    }
+                },
+                "add": {
+                    "type": "literal",
+                    "children": {
+                        "targets": {
+                            "type": "argument",
+                            "parser": "minecraft:entity",
+                            "properties": {
+                                "amount": "multiple",
+                                "type": "players"
+                            },
+                            "children": {
+                                "dragon_ability": {
+                                    "type": "argument",
+                                    "parser": "minecraft:resource",
+                                    "properties": {
+                                        "registry": "dragonsurvival:dragon_ability"
+                                    },
+                                    "executable": true
+                                }
+                            }
+                        }
+                    }
+                },
+                "refresh": {
+                    "type": "literal",
+                    "children": {
+                        "targets": {
+                            "type": "argument",
+                            "parser": "minecraft:entity",
+                            "properties": {
+                                "amount": "multiple",
+                                "type": "players"
+                            },
+                            "executable": true
+                        }
+                    }
+                }
+            }
+        },
+        "dragon-modifiers": {
+            "type": "literal",
+            "children": {
+                "clear": {
+                    "type": "literal",
+                    "children": {
+                        "targets": {
+                            "type": "argument",
+                            "parser": "minecraft:entity",
+                            "properties": {
+                                "amount": "multiple",
+                                "type": "entities"
+                            },
+                            "executable": true
+                        }
+                    },
+                    "executable": true
+                }
+            }
+        },
+        "dragon-mark": {
+            "type": "literal",
+            "children": {
+                "clear": {
+                    "type": "literal",
+                    "children": {
+                        "targets": {
+                            "type": "argument",
+                            "parser": "minecraft:entity",
+                            "properties": {
+                                "amount": "multiple",
+                                "type": "players"
+                            },
+                            "executable": true
+                        }
+                    },
+                    "executable": true
+                }
+            }
+        },
+        "dragon-editor": {
+            "type": "literal",
+            "executable": true
+        },
+        "dragon-altar": {
+            "type": "literal",
+            "executable": true
+        },
+        "dragon": {
+            "type": "literal",
+            "children": {
+                "dragon_species": {
+                    "type": "argument",
+                    "parser": "minecraft:resource",
+                    "properties": {
+                        "registry": "dragonsurvival:dragon_species"
+                    },
+                    "children": {
+                        "dragon_body": {
+                            "type": "argument",
+                            "parser": "minecraft:resource",
+                            "properties": {
+                                "registry": "dragonsurvival:dragon_body"
+                            },
+                            "children": {
+                                "dragon_stage": {
+                                    "type": "argument",
+                                    "parser": "minecraft:resource",
+                                    "properties": {
+                                        "registry": "dragonsurvival:dragon_stage"
+                                    },
+                                    "children": {
+                                        "target": {
+                                            "type": "argument",
+                                            "parser": "minecraft:entity",
+                                            "properties": {
+                                                "amount": "multiple",
+                                                "type": "players"
+                                            },
+                                            "executable": true
+                                        }
+                                    },
+                                    "executable": true
+                                }
+                            },
+                            "executable": true
+                        }
+                    },
+                    "executable": true
+                }
+            },
+            "executable": true
+        },
+        "dragon-growth": {
+            "type": "literal",
+            "children": {
+                "targets": {
+                    "type": "argument",
+                    "parser": "minecraft:entity",
+                    "properties": {
+                        "amount": "multiple",
+                        "type": "players"
+                    },
+                    "children": {
+                        "amount": {
+                            "type": "argument",
+                            "parser": "brigadier:integer",
+                            "properties": {
+                                "min": 10,
+                                "max": 300
+                            },
+                            "executable": true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

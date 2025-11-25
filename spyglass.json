@@ -1,0 +1,105 @@
+{
+    "env": {
+        "dependencies": [
+            "@vanilla-mcdoc"
+        ],
+        "mcmetaSummaryOverrides": {
+            "registries": {
+                "path": "./spyglass/registries.json",
+                "replace": false
+            },
+            "commands": {
+                "path": "./spyglass/commands.json",
+                "replace": false
+            }
+        },
+        "gameVersion": "1.21.1",
+        "customResources": {
+            "dragonsurvival/dragon_ability": {
+                "category": "dragonsurvival:dragon_ability",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "tags/dragonsurvival/dragon_ability": {
+                "category": "tag/dragonsurvival:dragon_ability"
+            },
+            "dragonsurvival/dragon_body": {
+                "category": "dragonsurvival:dragon_body",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "tags/dragonsurvival/dragon_body": {
+                "category": "tag/dragonsurvival:dragon_body"
+            },
+            "dragonsurvival/dragon_penalty": {
+                "category": "dragonsurvival:dragon_penalty",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "tags/dragonsurvival/dragon_penalty": {
+                "category": "tag/dragonsurvival:dragon_penalty"
+            },
+            "dragonsurvival/dragon_species": {
+                "category": "dragonsurvival:dragon_species",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "tags/dragonsurvival/dragon_species": {
+                "category": "tag/dragonsurvival:dragon_species"
+            },
+            "dragonsurvival/dragon_stage": {
+                "category": "dragonsurvival:dragon_stage",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "tags/dragonsurvival/dragon_stage": {
+                "category": "tag/dragonsurvival:dragon_stage"
+            },
+            "dragonsurvival/projectile_data": {
+                "category": "dragonsurvival:projectile_data",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "dragonsurvival/dragon_emote_set": {
+                "category": "dragonsurvival:dragon_emote_set",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "data_maps/dragonsurvival/dragon_body": {
+                "category": "dragonsurvival:data_map_body_icons",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "data_maps/dragonsurvival/dragon_species": {
+                "category": "dragonsurvival:data_map_dragon_species",
+                "ext": ".json",
+                "pack": "data"
+            },
+            "animations": {
+                "category": "dragonsurvival:animations",
+                "ext": ".json",
+                "pack": "assets"
+            },
+            "custom_soul_icons": {
+                "category": "dragonsurvival:custom_soul_icons",
+                "ext": ".json",
+                "pack": "assets"
+            },
+            "geo": {
+                "category": "dragonsurvival:player_modle",
+                "ext": ".geo\u002Ejson",
+                "pack": "assets"
+            },
+            "skin/default_parts": {
+                "category": "dragonsurvival:skin_default_parts",
+                "ext": ".json",
+                "pack": "assets"
+            },
+            "skin/parts": {
+                "category": "dragonsurvival:skin_parts",
+                "ext": ".json",
+                "pack": "assets"
+            }
+        }
+    }
+}

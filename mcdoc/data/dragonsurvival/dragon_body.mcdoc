@@ -1,0 +1,180 @@
+use ::java::util::attribute::AttributeOperation
+use ::java::data::loot::LootCondition
+use ::java::data::util::SoundEventRef
+
+// ---------------------------------------------------------------------------------------------------------------------
+// 待修复 :: 对于模组化的 mcdoc 文件已损坏
+// use super::dragon_stage::Modifier
+// use super::dragon_species::UnlockableBehavior
+
+struct Modifier {
+    /// 生物属性(https://zh.minecraft.wiki/w/属性)
+    attribute: #[id="attribute"] string,
+    /// 控制属性修改的数值和计算方式
+    amount: (
+        LevelBasedValue |
+        PreciseLevelBasedValue |
+    ),
+    /// 对数据的操作方式
+    operation: AttributeOperation
+}
+
+struct PreciseLevelBasedValue {
+    /// 基础值
+    precise_base: float,
+    /// 每级增量值
+    precise_amount: float
+}
+
+
+struct UnlockableBehavior {
+    /// 解锁条件
+    /// 谓词(https://zh.minecraft.wiki/w/谓词)
+    unlock_condition?: LootCondition,
+    /// 可见性
+    /// - always_visible    始终可见
+    /// - always_hidden     始终隐藏
+    /// - visible_if_locked 如果锁定则可见
+    visibility?: Visibility
+}
+
+enum(string) Visibility {
+    Always_Visible      = "always_visible",
+    Always_Hidden       = "always_hidden",
+    Visible_If_Locked   = "visible_if_locked"
+}
+
+struct LevelBasedValueMap {
+    /// 等级依赖函数(https://zh.minecraft.wiki/w/魔咒数据格式/等级依赖函数)
+	type: #[id="enchantment_level_based_value_type"] string,
+	...minecraft:level_based_value[[type]],
+}
+
+type LevelBasedValue = (float | LevelBasedValueMap)
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+dispatch minecraft:resource[dragonsurvival:dragon_body] to struct DragonBody {
+    /// 决定此身体是否是默认身体全局列表的一部分(默认：false)
+    is_default?: boolean,
+    /// 指定此身体的解锁条件及其在龙编辑器中的可见性
+    unlockable_behavior?: UnlockableBehavior,
+    /// 属性修饰符，始终以"等级"1计算
+    modifiers?: [Modifier],
+    /// 决定翅膀是否可以隐藏(默认：true)
+    can_hide_wings?: boolean,
+    /// 此身体类型使用的模型文件 (位于`assets/<命名空间>/geo/`下的`.geo.json`文件)
+    /// (不填写默认使用`dragonsurvival:dragon_model`)
+    model?: #[id="dragonsurvival:player_modle"] string,
+    /// 贴图大小(默认512x512)
+    texture_size?: TextureSize,
+    /// 此身体使用的动画文件 (位于`assets/<命名空间>/animations/`下的`.json`文件)
+    animation: #[id="dragonsurvival:animations"] string,
+    /// 默认GUI图标，在当前物种没有特定图标时使用
+    default_icon?: #[id] string,
+    /// 当翅膀隐藏时将隐藏的骨骼列表
+    /// (默认：'WingLeft', 'WingRight', 'SmallWingLeft' 和 'SmallWingRight')
+    bones_to_hide_for_toggle?: [string],
+    /// 此身体可以使用的表情
+    /// - 可引用自 `data/dragonsurvival/dragon_emote_set/`中的`json`文件在外部编写，例如 `"dragonsurvival:default_emotes"`
+    /// - 或者直接在此填写(但是不建议，可能影响可读性)
+    emotes: (#[id(registry="dragonsurvival:dragon_emote_set")] string|DragonEmoteSet),
+    /// 高度和宽度尺寸如何计算(使用实体的当前比例)
+    scaling_proportions: ScalingProportions,
+    /// 决定下蹲时高度变化多少
+    crouch_height_ratio: double @ 0..1,
+    /// 决定骑乘者的放置位置
+    mounting_offset?: MountingOffsets,
+    /// 决定背包的放置位置(基础位置是骨骼'BackpackBone')
+    backpack_offset?: BackpackOffsets,
+    /// 与 Better Combat 模组兼容的武器位置偏移
+    bettercombat_weapon_offset?: float,
+}
+
+dispatch minecraft:resource[dragonsurvival:dragon_emote_set] to struct DragonEmoteSet {
+    /// 龙将会使用的表情列表
+    emotes: [DragonEmote],
+}
+
+struct TextureSize {
+    width: int,
+    height: int
+}
+
+struct DragonEmote {
+    /// 动画键
+    animation_key: #[id] string,
+    /// 翻译覆盖
+    /// - 如果不提供，使用`animationKey`作为翻译键
+    translation_override?: string,
+    /// 动画播放速度
+    speed?: double,
+    /// 动画持续时间
+    duration?: int,
+    /// 动画是否循环播放
+    loops?: boolean,
+    /// 动画是否允许与其他动画混合
+    blend?: boolean,
+    /// 该动画是否锁定头部
+    locks_head?: boolean,
+    /// 该动画是否锁定尾巴
+    locks_tail?: boolean,
+    /// 是否主要在第三人称下显示
+    third_person?: boolean,
+    /// 是否允许玩家在动画中移动
+    can_move?: boolean,
+    /// 动画所用音效
+    sound?: Sound,
+}
+
+struct Sound {
+    /// 音效id
+    sound_event: #[id="sound_event"] string,
+    /// 音效音量
+    /// (默认：1)
+    volume?: float @ 0..,
+    /// 音效音调
+    /// (默认：1)
+    pitch?: float @ 0..,
+    /// 决定音效播放的频率(计算方式为 emote_ticks % interval == 0)
+    interval: int
+}
+
+struct ScalingProportions {
+    /// 龙的身体宽度
+    width: double @ 0..,
+    /// 龙的身体高度
+    height: double @ 0..,
+    /// 眼睛高度(视角高度)
+    eye_height: double @ 0..,
+    /// 整体缩放倍率
+    /// (默认：1)
+    scale_multiplier?: double @ 0..,
+    /// 阴影大小倍率
+    /// (默认：1)
+    shadow_multiplier?: double @ 0..
+}
+
+struct MountingOffsets {
+    /// 人类骑乘位置偏移
+    /// (默认：[0, 0, 0])
+    human_offset?: [float] @ 3,
+    /// 龙类骑乘位置偏移
+    /// (默认：[0, 0, 0])
+    dragon_offset?: [float] @ 3,
+    /// 缩放相关的额外偏移
+    /// (默认：[0, 0, 0])
+    offset_per_scale_above_one?: [float] @ 3,
+}
+
+struct BackpackOffsets {
+    /// 位置偏移
+    /// (默认：[0, 0, 0])
+    position_offset?: [float] @ 3,
+    /// 旋转偏移
+    /// (默认：[0, 0, 0])
+    rotation_offset?: [float] @ 3,
+    /// 缩放比例
+    /// (默认：[1, 1, 1])
+    scale?: [float] @ 3,
+}

@@ -1,0 +1,202 @@
+use ::java::data::loot::LootCondition
+use ::java::util::text::TextColor
+
+// ---------------------------------------------------------------------------------------------------------------------
+// FIXME :: 规范路径的填写保证输入正确
+type PNG_Path = #[match_regex="^(?:([a-z0-9_.-]+):)?([a-z0-9/._-]+\\.png)$"] string
+
+
+dispatch minecraft:resource[dragonsurvival:dragon_species] to struct DragonSpecies {
+    /// 初始成长值将为此值或第一阶段的最小成长值
+    starting_growth?: double @ 1..,
+    /// 指定此物种的解锁条件及其在龙祭坛中的可见性
+    /// (默认每个物种使用相同的条目，其值在'mana_handling'字段规范中提及)
+    unlockable_behavior?: UnlockableBehavior,
+    /// 指定一些法力交互
+    /// 特别是经验值(等级)如何与之交互(例如，当所有法力耗尽时，将经验值转换为法力)
+    mana_handling?: ManaHandling,
+    /// 如果不使用全局默认的阶段列表，可以定义此项
+    /// 标签将使用 `data/命名空间/tags/dragonsurvival/dragon_stage/` 中指定json文件包含的数据
+    custom_stage_progression?: (
+        #[id(registry="dragonsurvival:dragon_stage", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_stage"] string] |
+    ),
+    /// 如果不使用全局默认的身体类型列表，可以定义此项
+    /// 标签将使用 `data/命名空间/tags/dragonsurvival/dragon_body/` 中指定json文件包含的数据
+    bodies?: (
+        #[id(registry="dragonsurvival:dragon_body", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_body"] string] |
+    ),
+    /// 指定此物种拥有的能力
+    /// 标签将使用 `data/命名空间/tags/dragonsurvival/dragon_ability/` 中指定json文件包含的数据
+    abilities?: (
+        #[id(registry="dragonsurvival:dragon_ability", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_ability"] string] |
+    ),
+    /// 指定此物种拥有的缺陷
+    /// 标签将使用 `data/命名空间/tags/dragonsurvival/dragon_penalty/` 中指定json文件包含的数据
+    penalties?: (
+        #[id(registry="dragonsurvival:dragon_penalty", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_penalty"] string] |
+    ),
+    /// 指向物种相关各种资源(纹理等)的位置
+    misc_resources: MiscResources,
+}
+
+struct UnlockableBehavior {
+    /// 解锁条件
+    /// 谓词(https://zh.minecraft.wiki/w/谓词)
+    unlock_condition?: LootCondition,
+    /// 可见性
+    /// - always_visible    始终可见
+    /// - always_hidden     始终隐藏
+    /// - visible_if_locked 如果锁定则可见
+    visibility?: Visibility,
+}
+
+enum(string) Visibility {
+    Always_Visible = "always_visible",
+    // 始终可见
+    Always_Hidden = "always_hidden",
+    // 始终隐藏
+    Visible_If_Locked = "visible_if_locked",
+    // 如果锁定则可见
+}
+
+struct ManaHandling {
+    /// 指定经验值转换为法力的比率(默认：0)
+    /// 如果值为0，则不进行转换
+    /// (默认的'mana_handling'条目使用值0.1，表示1点法力=10点经验值)
+    mana_xp_conversion?: double @ 0..,
+    /// 指定每经验等级获得多少法力(默认：0)
+    /// 如果值为0，则不授予额外法力
+    /// (默认的'mana_handling'条目使用值0.25，表示每4个经验等级=1点法力)
+    mana_per_level?: double @ 0..,
+    /// 指定通过经验等级可以获得的最大法力值(默认：0)
+    /// 如果值为0，则不授予额外法力
+    /// (默认的'mana_handling'条目使用值9，表示在经验等级36时达到上限)
+    max_mana_from_levels?: double @ 0..,
+}
+
+struct MiscResources {
+    /// 食物条图标 - 如果未指定，将渲染原版食物条
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/food_icons/sea_food_icons.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/food_icons/sea_food_icons.png"`
+    food_sprites?: PNG_Path,
+    /// 法力精灵图标 - 如果未指定，将使用通用纹理
+    /// (以物种的主色调着色)
+    mana_sprites?: ManaSprites,
+    /// 在龙祭坛和物种界面中使用的横幅
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/altar/sea/altar_icon.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/altar/sea/altar_icon.png"`
+    altar_banner: PNG_Path,
+    /// 施法条
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/casting_bars/sea/cast_bar.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/casting_bars/sea/cast_bar.png"`
+    ability_bar: PNG_Path,
+    /// 左箭头，用于在存在超过4个阶段时导航
+    /// (如果未指定，将使用通用图标)
+    growth_left_arrow?: HoverIcon,
+    /// 右箭头，用于在存在超过4个阶段时导航
+    /// (如果未指定，将使用通用图标)
+    growth_right_arrow?: HoverIcon,
+    /// 成长水晶 - 根据阶段内的进度填充
+    growth_crystal: FillIcon,
+    /// 确定饮食条目的工具提示渲染方式
+    food_tooltip: FoodTooltip,
+    /// 确定：
+    /// - 龙饮食工具提示文本和边框颜色
+    /// - 通用法力精灵图标颜色
+    primary_color: (
+        #[color="hex_rgb"] string |
+        #[color="named"] TextColor |
+    ),
+    /// 确定：
+    /// - 龙饮食工具提示边框颜色
+    secondary_color: (
+        #[color="hex_rgb"] string |
+        #[color="named"] TextColor |
+    ),
+    /// 确定使用哪个爪物品(等级)来渲染爪纹理
+    /// - sword    剑
+    /// - pickaxe  镐
+    /// - shovel   锹
+    /// - axe      斧
+    claw_texture_slot?: ClawSlot,
+}
+
+struct ManaSprites {
+    /// 满法力点
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/mana_icons/sea/full.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/mana_icons/sea/full.png"`
+    full: PNG_Path,
+    /// 保留的法力点
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/mana_icons/sea/reserved.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/mana_icons/sea/reserved.png"`
+    reserved: PNG_Path,
+    /// 当恢复法力时，在'recovery'和'empty'之间切换
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/mana_icons/sea/recovery.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/mana_icons/sea/recovery.png"`
+    recovery: PNG_Path,
+    /// 施法时
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/mana_icons/sea/empty.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/mana_icons/sea/empty.png"`
+    empty: PNG_Path,
+}
+
+struct HoverIcon {
+    /// 鼠标悬停时显示的替换图标资源路径
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/stage/sea/right_arrow_hover.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/stage/sea/right_arrow_hover.png"`
+    hover_icon: PNG_Path,
+    /// 普通图标资源路径
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/stage/sea/right_arrow_main.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/stage/sea/right_arrow_main.png"`
+    icon: PNG_Path,
+}
+
+struct FillIcon {
+    /// 空状态
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/mana_icons/sea/empty.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/mana_icons/sea/empty.png"`
+    empty: PNG_Path,
+    /// 满状态
+    /// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+    /// - 若用图片`assets/dragonsurvival/textures/gui/custom/mana_icons/sea/full.png`
+    /// - 请这么写`"dragonsurvival:textures/gui/custom/mana_icons/sea/full.png"`
+    full: PNG_Path,
+}
+
+struct FoodTooltip {
+    /// 使用的自定义字体(https://zh.minecraft.wiki/w/自定义字体)
+    /// (默认：dragonsurvival:food_tooltip_icon_font)
+    font?: #[id="font"] string,
+    /// 营养图标
+    /// 码位字符串(https://zh.minecraft.wiki/w/自定义字体#码位字符串)
+    nutrition_icon: #[match_regex="^\\\\u[0-9A-Fa-f]{4}$"] string,
+    /// 饱和度图标
+    /// 码位字符串(https://zh.minecraft.wiki/w/自定义字体#码位字符串)
+    saturation_icon: #[match_regex="^\\\\u[0-9A-Fa-f]{4}$"] string,
+    /// 覆盖龙饮食条目工具提示的主色调
+    color?: (
+        #[color="hex_rgb"] string |
+        #[color="named"] TextColor |
+    ),
+}
+
+enum(string) ClawSlot {
+    Sword = "sword",
+    Pickaxe = "pickaxe",
+    Shovel = "shovel",
+    Axe = "axe",
+}

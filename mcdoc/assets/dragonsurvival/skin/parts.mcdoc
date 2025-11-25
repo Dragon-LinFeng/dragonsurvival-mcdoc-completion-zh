@@ -1,0 +1,31 @@
+use ::java::util::text::Text
+
+dispatch minecraft:resource[dragonsurvival:skin_parts] to struct SkinParts {
+    /// 组件标识符，应与JSON文件名一致
+    key: string,
+    /// 使用文本组件定义皮肤组件本地化文本
+    /// - 若不填写将使用`skin_part.<命名空间>.<物种id>.<该JSON定义的key值>`作为本地化键, 例如`skin_part.dragonsurvival.sea_dragon.base_1`
+    localization?: Text,
+	/// 此皮肤组件将使用的贴图
+	/// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+	/// - 若用图片`assets/dragonsurvival/textures/dragon/custom/cave_base_2.png`
+	/// - 请这么写`"dragonsurvival:textures/dragon/custom/cave_base_2.png"`
+    texture: string,
+    /// 可应用该组件的物种列表
+    applicable_species?: [#[id="dragonsurvival:dragon_species"] string],
+    /// 可应用该组件的身体类型列表
+    applicable_bodies?: [#[id="dragonsurvival:dragon_body"] string],
+    /// 平均色相
+    /// - 这将在游戏中调整皮肤组件色相时作为默认值
+    /// - 可通过龙之生存mod中自带的`assets\dragonsurvival\colors.py`脚本批处理
+    average_hue?: double,
+    /// 可能有颜色的
+    /// 默认: true
+    is_colorable?: boolean,
+    /// 包含在随机选择器中
+    /// 默认: true
+    include_in_randomizer?: boolean,
+    /// 色相可以随机化
+    /// 默认: true
+    is_hue_randomizable?: boolean,
+}

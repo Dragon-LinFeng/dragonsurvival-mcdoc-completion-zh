@@ -1,0 +1,177 @@
+use ::java::world::item::SingleItem
+use ::java::world::component::item::FoodEffect
+
+// ---------------------------------------------------------------------------------------------------------------------
+// FIXME :: 规范路径的填写保证输入正确
+type PNG_Path = #[match_regex="^(?:([a-z0-9_.-]+):)?([a-z0-9/._-]+\\.png)$"] string
+
+// ---------------------------------------------------------------------------------------------------------------------
+// FIXME :: 由于Spyglass的`identifier`功能仍未完善, 这只是为了在vscode中工作
+dispatch minecraft:resource[dragonsurvival:data_map_dragon_species] to struct DataMapDragonSpecies {
+	replace?: boolean,
+	values: struct SpeciesID {
+		[#[id(registry="dragonsurvival:dragon_species")] string]: (DragonBeaconData | StageResourcesID | EndPlatform | [DietEntry]),
+	},
+}
+
+struct StageResourcesID {
+	/// 成长阶段资源数据
+	/// - 该项仅适用于`stage_resources.json - 成长阶段`
+	[#[id(registry="dragonsurvival:dragon_stage")] string]: StageResource,
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// FIXME :: 这只是为了方便本土化翻译
+// use ::java::world::component::item::Food
+struct Food {
+	/// 吃掉后给予的饥饿值(上限为20.0)
+	nutrition: float @ 0..,
+	/// 吃掉后恢复的饱和度
+	saturation: float,
+	/// 当玩家的饥饿槽/饱和度满的时候，物品是否可以吃?
+	/// 默认为: false
+	can_always_eat?: boolean,
+	/// 吃这个物品所需的时间(以秒为单位)
+	/// 默认为`1.6`
+	eat_seconds?: float @ 0..,
+	/// 吃掉后给予的药水效果
+	effects?: [FoodEffect],
+	/// 与牛奶桶的工作方式类似
+	using_converts_to?: SingleItem,
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// FIXME :: broken for modded mcdoc files
+// use super::super::neoforge::DataMap
+type DataMap<K, V> = struct {
+	replace?: boolean,
+	values: struct DataMapValues {
+		[K]: (
+			V |
+			struct ReplaceableValue {
+				replace?: boolean,
+				value: V,
+			} |
+		),
+	},
+	remove?: [K],
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+type ComplexRemovalDataMap<K, V, R> = struct {
+	replace?: boolean,
+	values: struct DataMapValues_ {
+		[K]: (
+			V |
+			struct ReplaceableValue_ {
+				replace?: boolean,
+				value: V,
+			} |
+		),
+	},
+	remove?: struct RemovalEntry {
+		[K]: [R],
+	},
+}
+
+type SimpleMap<K, V> = struct {
+	[K]: V,
+}
+
+// ----- # ----- //
+dispatch minecraft:resource[dragonsurvival:data_map_diet_entries] to ComplexRemovalDataMap<#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string, [DietEntry], string>
+
+struct DietEntry {
+	/// 有效的资源位置（命名空间:路径）
+	/// 命名空间和路径中允许使用正则表达式
+	items: (
+		#[id(registry="item", tags="allowed")] string |
+		#[regex_pattern] string |
+	),
+	/// 定义具体的食物效果
+	/// - 若不指定则使用食物原本的效果
+	properties?: Food,
+}
+
+// ----- # ----- //
+dispatch minecraft:resource[dragonsurvival:data_map_stage_resources] to ComplexRemovalDataMap<#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string, SimpleMap<#[id="dragonsurvival:dragon_stage"] string, StageResource>, #[id="dragonsurvival:dragon_stage"] string>
+
+struct StageResource {
+	/// 成长阶段图标
+	/// - 会出现在龙背包的右上角、物种旗帜左上角等位置
+	growth_icon: GrowthIcon,
+	/// 默认皮肤贴图
+	/// - 会出现在物种选择界面、选择测试资源包的时候作为皮肤
+	default_skin: DefaultSkin,
+}
+
+struct GrowthIcon {
+	/// 鼠标悬停时显示的替换图标资源路径
+	/// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+	/// - 若用图片`assets/dragonsurvival/textures/gui/custom/stage/sea/adult_stage_hover.png`
+	/// - 请这么写`"dragonsurvival:textures/gui/custom/stage/sea/adult_stage_hover.png"`
+	hover_icon: PNG_Path,
+	/// 普通图标资源路径
+	/// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+	/// - 若用图片`assets/dragonsurvival/textures/gui/custom/stage/sea/adult_stage_main.png`
+	/// - 请这么写`"dragonsurvival:textures/gui/custom/stage/sea/adult_stage_main.png"`
+	icon: PNG_Path,
+}
+
+struct DefaultSkin {
+	/// 皮肤纹理资源路径
+	/// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+	/// - 若用图片`assets/dragonsurvival/textures/dragon/sea_dragon/adult.png`
+	/// - 请这么写`"dragonsurvival:textures/dragon/sea_dragon/adult.png"`
+	skin: PNG_Path,
+	/// 皮肤发光纹理资源路径
+	/// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+	/// - 若用图片`assets/dragonsurvival/textures/dragon/sea_dragon/adult_glow.png`
+	/// - 请这么写`"dragonsurvival:textures/dragon/sea_dragon/adult_glow.png"`
+	glow_skin: PNG_Path,
+}
+
+// ----- # ----- //
+dispatch minecraft:resource[dragonsurvival:data_map_end_platforms] to DataMap<#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string, EndPlatform>
+
+struct EndPlatform {
+	/// 放置平台的结构id
+	/// - 该项仅适用于`end_platforms.json - 末地平台`
+	structure: #[id="structure"] string,
+	/// 放置平台的坐标
+	/// - 该项仅适用于`end_platforms.json - 末地平台`
+	spawn_position: [int] @ 3,
+}
+
+// ----- # ----- //
+dispatch minecraft:resource[dragonsurvival:data_map_dragon_beacon_data] to DataMap<#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string, DragonBeaconData>
+
+struct DragonBeaconData {
+	/// 药水效果列表
+	/// - 该项仅适用于`dragon_beacon_data.json - 龙之信标`
+	effects: [Effect],
+	payment_data: PaymentData,
+}
+
+struct PaymentData {
+	/// 与激活的信标交互时的经验消耗
+	/// (默认值：0)
+	experience_cost?: int @ 0..,
+	/// 效果持续时间乘数
+	/// (默认值：1)
+	duration_multiplier?: int @ 0..,
+	/// 效果等级乘数
+	/// (默认值：0)
+	amplifier_modification?: int,
+}
+
+struct Effect {
+	effect: #[id="mob_effect"] string,
+	/// 默认值：无限持续时间
+	duration?: int @ 1..,
+	/// 默认值：0
+	amplifier?: int @ 0..,
+}
+
+// ----- # ----- //
+dispatch minecraft:resource[dragonsurvival:data_map_body_icons] to ComplexRemovalDataMap<#[id(registry="dragonsurvival:dragon_body", tags="allowed")] string, SimpleMap<#[id="dragonsurvival:dragon_species"] string, PNG_Path>, #[id="dragonsurvival:dragon_species"] string>

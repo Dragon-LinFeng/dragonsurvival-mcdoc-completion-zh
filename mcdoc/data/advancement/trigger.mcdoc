@@ -1,0 +1,46 @@
+use ::java::data::advancement::trigger::Conditions
+use ::java::data::advancement::trigger::TriggerBase
+use ::java::world::item::ItemStack
+
+dispatch minecraft:trigger[dragonsurvival:be_dragon] to Conditions<struct BeDragon {
+    ...TriggerBase,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:convert_item_from_ability] to Conditions<struct ConvertItemFromAbility {
+    ...TriggerBase,
+    /// 检查从什么物品进行转换
+    item_from: ItemStack,
+    /// 检查转换成的物品
+    item_to: ItemStack,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:mine_block_under_lava] to Conditions<struct MineBlockUnderLava {
+    ...TriggerBase,
+    block?: #[id="block"] string,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:sleep_on_treasure] to Conditions<struct SleepOnTreasure {
+    ...TriggerBase,
+    /// 睡在指定片数以上的财宝堆中才能触发
+    nearby_treasure_amount?: int,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:steal_from_villager] to Conditions<struct StealFromVillager {
+    ...TriggerBase,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:stop_natural_growth] to Conditions<struct StopNaturalGrowth {
+    ...TriggerBase,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:upgrade_ability] to Conditions<struct UpgradeAbility {
+    ...TriggerBase,
+    /// 想要检查的龙能力ID
+    ability?: #[id="dragonsurvival:dragon_ability"] string,
+    /// 等级等于多少时触发
+    level?: int,
+}>
+
+dispatch minecraft:trigger[dragonsurvival:use_dragon_soul] to Conditions<struct UseDragonSoul {
+    ...TriggerBase,
+}>

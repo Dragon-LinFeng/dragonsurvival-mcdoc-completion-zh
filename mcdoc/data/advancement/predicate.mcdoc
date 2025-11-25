@@ -1,0 +1,130 @@
+use ::java::data::util::MinMaxBounds
+use ::java::data::worldgen::feature::block_predicate::BlockPredicate
+
+// ----- # ----- //
+dispatch minecraft:entity_sub_predicate[dragonsurvival:dragon_predicate] to struct DragonPredicate {
+    /// 检查玩家是否属于特定的物种
+    dragon_species?: (
+        #[id(registry="dragonsurvival:dragon_species", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_species"] string] |
+    ),
+    /// 检查龙玩家的成长阶段和成长进度
+    stage_specific?: DragonStagePredicate,
+    /// 检查玩家是否使用了给定的龙身体类型
+    /// 例如 `dragonsurvival:center`
+    dragon_body?: (
+        #[id(registry="dragonsurvival:dragon_body", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_body"] string] |
+    ),
+    /// 检查龙的成长是否被手动停止
+    is_growth_stopped?: boolean,
+    /// 当末影龙死亡且玩家曾对其造成伤害时设置此标志
+    /// 在末地维度与充能状态的原初锚方块交互时清除
+    /// (需满足末影龙存活且方块处于充能状态)
+    marked_by_ender_dragon?: boolean,
+    /// 检查飞行能力是否被授予
+    /// 若相关配置启用，原初锚也可将其设为'true'
+    flight_was_granted?: boolean,
+    /// 检查旋转能力是否被授予
+    /// 若相关配置启用，原初锚也可将其设为'true'
+    spin_was_granted?: boolean,
+    /// 用于检测龙是否正在飞行(仅检测龙生的飞行)
+    is_flying?: boolean,
+}
+
+struct DragonStagePredicate {
+    /// 检查玩家的成长进度(龙阶段)
+    /// 例如 `dragonsurvival:adult`
+    dragon_stage?: (
+        #[id(registry="dragonsurvival:dragon_stage", tags="allowed")] string |
+        [#[id="dragonsurvival:dragon_stage"] string] |
+    ),
+    /// 检查在当前阶段内的完成度(0-100%)
+    growth_percentage?: MinMaxBounds<double>,
+    /// 检查成长值的原始数值
+    growth?: MinMaxBounds<double>,
+}
+
+// ----- # ----- //
+dispatch minecraft:entity_sub_predicate[dragonsurvival:entity_check_predicate] to struct EntityCheckPredicate {
+    /// 检查实体类型
+    /// - `living_entity` 活着的实体
+    /// - `enemy` 敌对生物(Enemy 接口实现类或Mob子类实体)
+    /// - `tamed` 已被驯服的生物(TamableAnimal 且已被驯服)
+    /// - `animal` 动物(Animal 的子类)
+    /// - `item` 物品实体
+    /// - `experience_or` 经验球
+    check_for?: Type,
+}
+
+enum(string) Type {
+    /// 活着的实体
+    Living_Entity = "living_entity",
+    /// 敌对生物(Enemy 接口实现类或Mob子类实体)
+    Enemy = "enemy",
+    /// 已被驯服的生物(TamableAnimal 且已被驯服)
+    Tamed = "tamed",
+    /// 动物(Animal 的子类)
+    Animal = "animal",
+    /// 物品实体
+    Item = "item",
+    /// 经验球
+    Experience_Orb = "experience_orb",
+}
+
+// ----- # ----- //
+dispatch minecraft:entity_sub_predicate[dragonsurvival:custom_predicates] to struct CustomPredicates {
+    /// 实体眼睛是否处于特定流体中(如水中、熔岩中)
+    eye_in_fluid?: (
+        #[id(registry="neoforge:fluid_type", tags="allowed")] string |
+        [#[id="neoforge:fluid_type"] string] |
+    ),
+    /// 天气相关的判断条件(内部判断用的逻辑是and)
+    weather_predicate?: WeatherPredicate,
+    /// 检测天空光照等级
+    sun_light_level?: MinMaxBounds<int>,
+    /// 是否拥有特定的，由 `dragonsurvival:modifier` 实现的持续效果
+    has_duration_effect?: #[id] string,
+    /// 附近是否存在符合条件的实体
+    is_nearby_entity?: NearbyEntityPredicate,
+    /// 玩家饥饿值范围
+    player_hunger?: MinMaxBounds<int>,
+    /// 实体健康值百分比范围
+    health_percentage?: MinMaxBounds<double>,
+    /// 实体是否具有特定的UUID
+    has_uuid?: #[uuid] (
+        #[canonical] [int] @ 4 |
+        string |
+    ),
+    /// 实体是否看向特定的方块
+    looking_at_block?: LookingAtBlock
+}
+
+struct WeatherPredicate {
+    /// 正在下雨
+    is_raining?: boolean,
+    /// 处于雷暴天气
+    is_thundering?: boolean,
+    /// 正在下雪
+    is_snowing?: boolean,
+    /// 正在下雨或下雪
+    /// - 性能优于单独检测雨天和雪天
+    is_raining_or_snowing?: boolean,
+}
+
+struct NearbyEntityPredicate {
+    /// 要检查的实体类型
+    entity_types: (
+        #[id(registry="entity_type", tags="allowed")] string |
+        [#[id="entity_type"] string] |
+    ),
+    /// 进行检测的范围半径
+    radius: int,
+}
+
+struct LookingAtBlock {
+    // 方块谓词
+    predicate: BlockPredicate,
+    // 最大检测距离
+    distance: double,
+}

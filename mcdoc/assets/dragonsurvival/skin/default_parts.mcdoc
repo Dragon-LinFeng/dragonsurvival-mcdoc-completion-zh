@@ -1,0 +1,66 @@
+dispatch minecraft:resource[dragonsurvival:skin_default_parts] to struct SkinDefaultParts {
+    /// 指定该 默认组件表 将映射至的物种id
+    species: #[id="dragonsurvival:dragon_species"] string,
+    /// 指定该 默认组件表 将映射至的物种阶段id
+    stage: #[id="dragonsurvival:dragon_stage"] string,
+    /// 指定该 默认组件表 将映射至的身体类型id
+    /// 不填写默认所有身体类型都适用
+    body?: #[id="dragonsurvival:dragon_body"] string,
+    /// 该物种此阶段将使用的模型文件 (位于`assets/<命名空间>/geo/`下的`.geo.json`文件)
+    /// (不填写默认使用`dragonsurvival:dragon_model`)
+    model?: #[id="dragonsurvival:player_modle"] string,
+    /// 该物种此阶段将使用的默认皮肤组件
+    parts: Parts,
+}
+
+struct Parts {
+    /// 基础
+    /// - 使用`assets\<命名空间>\skin\parts\base\`目录下JSON文件中key的值
+    base?: string,
+    /// 底部
+    /// - 使用`assets\<命名空间>\skin\parts\bottom\`目录下JSON文件中key的值
+    bottom?: string,
+    /// 眼
+    /// - 使用`assets\<命名空间>\skin\parts\eyes\`目录下JSON文件中key的值
+    eyes?: string,
+    /// 角
+    /// - 使用`assets\<命名空间>\skin\parts\horns\`目录下JSON文件中key的值
+    horns?: string,
+    /// 背棘
+    /// - 使用`assets\<命名空间>\skin\parts\spikes\`目录下JSON文件中key的值
+    spikes?: string,
+    /// 爪
+    /// - 使用`assets\<命名空间>\skin\parts\claws\`目录下JSON文件中key的值
+    claws?: string,
+    /// 牙齿
+    /// - 使用`assets\<命名空间>\skin\parts\teeth\`目录下JSON文件中key的值
+    teeth?: string,
+    /// 魔法
+    /// - 使用`assets\<命名空间>\skin\parts\magic\`目录下JSON文件中key的值
+    magic?: string,
+
+    /// 额外
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra?: string,
+    /// 额外1
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra1?: string,
+    /// 额外2
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra2?: string,
+    /// 额外3
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra3?: string,
+    /// 额外4
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra4?: string,
+    /// 额外5
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra5?: string,
+    /// 额外6
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra6?: string,
+    /// 额外7
+    /// - 使用`assets\<命名空间>\skin\parts\extra\`目录下JSON文件中key的值
+    extra7?: string,
+}

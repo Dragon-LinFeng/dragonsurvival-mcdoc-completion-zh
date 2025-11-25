@@ -1,0 +1,24 @@
+use ::java::world::entity::projectile::fireball::AcceleratingProjectileBase
+use super::super::super::data::dragonsurvival::projectile_data::GeneralData
+use super::super::super::data::dragonsurvival::projectile_data::GenericBallData
+
+dispatch minecraft:entity[dragonsurvival:generic_ball_entity] to struct GenericBallEntity {
+    ...AcceleratingProjectileBase,
+    /// 弹射物等级
+    /// (复制自召唤该实体的技能等级)
+    projectile_level?: int,
+    /// 决定自定义弹射物的效果
+    general_data: GeneralData,
+    /// 决定自定义弹射物的外观
+    type_data: GenericBallData,
+    /// 已弹跳的次数(撞到方块或实体后反弹，若达到最大限制则尝试`滞留`)
+    bounces?: int,
+    /// 已滞留的时间(碰撞后停止移动的时间，若达到最大限制则尝试移除实体)
+    /// (单位：ticks)
+    lingering_ticks?: int,
+    /// 已移动的距离(若达到最大限制则尝试移除实体)
+    movement_distance?: float,
+    /// 已存在的时间(若达到最大限制则尝试移除实体)
+    /// (单位：ticks)
+    lifespan?: int,
+}
