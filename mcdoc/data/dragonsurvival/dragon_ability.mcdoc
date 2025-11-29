@@ -676,32 +676,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:damage] to struct D
     /// - 默认为 `dragonsurvival:dragon_ability_damage`
     scale?: #[id="attribute"] string,
     /// 使用 EvalEx 表达式引擎计算最终伤害值的数学公式
-    /// **可用变量:**
-    /// - `amount`: 基础伤害值
-    /// - `scale`: 缩放属性值
-    ///
-    /// **可用函数:**
-    /// - `SIN(value)`, `COS(value)`, `TAN(value)` - 三角函数（角度制）
-    /// - `SINH(value)`, `COSH(value)`, `TANH(value)` - 双曲三角函数
-    /// - `RAD(degrees)`, `DEG(radians)` - 角度弧度转换
-    /// - `LOG(value)`, `LOG10(value)` - 对数函数
-    /// - `SQRT(value)`, `ABS(value)` - 平方根和绝对值
-    /// - `MAX(a, b)`, `MIN(a, b)` - 最大值和最小值
-    /// - `ROUND(value, precision)` - 四舍五入
-    /// - `FLOOR(value)`, `CEILING(value)` - 向下和向上取整
-    /// - `IF(condition, true_value, false_value)` - 条件判断
-    /// - `NOT(value)` - 逻辑非
-    /// - `RANDOM()` - 随机数(0-1)
-    ///  
-    /// **可用常量:**
-    /// - `PI` - 圆周率 π
-    /// - `TRUE`, `FALSE` - 布尔值
-    ///
-    /// **可用运算符:**
-    /// - 算术: `+`, `-`, `*`, `/`, `%` , `^`
-    /// - 比较: `=`, `==`, `!=`, `<>`, `>`, `>=`, `<`, `<=`
-    /// - 逻辑: `&&` , `||`
-    ///
+    /// (https://ezylang.github.io/EvalEx/references/references.html)
     /// - 默认值: `"amount * scale"`
     expression?: string,
     /// 是否在造成伤害时临时装备龙爪上的工具

@@ -51,6 +51,62 @@
                         }
                     }
                 },
+                "query": {
+                    "type": "literal",
+                    "children": {
+                        "target": {
+                            "type": "argument",
+                            "parser": "minecraft:entity",
+                            "properties": {
+                                "amount": "single",
+                                "type": "players"
+                            },
+                            "children": {
+                                "dragon_ability": {
+                                    "type": "argument",
+                                    "parser": "minecraft:resource",
+                                    "properties": {
+                                        "registry": "dragonsurvival:dragon_ability"
+                                    },
+                                    "children": {
+                                        "level": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "max_level": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "current_cooldown": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "current_tick": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "cooldown": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "cast_time": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "is_applying_effects": {
+                                            "type": "literal",
+                                            "executable": true
+                                        },
+                                        "is_enabled": {
+                                            "type": "literal",
+                                            "executable": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "refresh": {
                     "type": "literal",
                     "children": {

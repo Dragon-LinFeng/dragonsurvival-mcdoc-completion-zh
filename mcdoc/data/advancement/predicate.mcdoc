@@ -16,6 +16,8 @@ dispatch minecraft:entity_sub_predicate[dragonsurvival:dragon_predicate] to stru
         #[id(registry="dragonsurvival:dragon_body", tags="allowed")] string |
         [#[id="dragonsurvival:dragon_body"] string] |
     ),
+    /// 检查技能/能力等级
+    ability_levels: AbilityLevel,
     /// 检查龙的成长是否被手动停止
     is_growth_stopped?: boolean,
     /// 当末影龙死亡且玩家曾对其造成伤害时设置此标志
@@ -30,6 +32,13 @@ dispatch minecraft:entity_sub_predicate[dragonsurvival:dragon_predicate] to stru
     spin_was_granted?: boolean,
     /// 用于检测龙是否正在飞行(仅检测龙生的飞行)
     is_flying?: boolean,
+}
+
+struct AbilityLevel {
+    /// 需要查询的技能/能力
+    ability?: #[id="dragonsurvival:dragon_ability"] string,
+    /// 需要检查的等级
+    level: MinMaxBounds,
 }
 
 struct DragonStagePredicate {

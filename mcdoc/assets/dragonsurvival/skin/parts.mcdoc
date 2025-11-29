@@ -28,4 +28,7 @@ dispatch minecraft:resource[dragonsurvival:skin_parts] to struct SkinParts {
     /// 色相可以随机化
     /// 默认: true
     is_hue_randomizable?: boolean,
+    /// 是否发光
+    /// 默认: false
+    is_glowing?: boolean
 }

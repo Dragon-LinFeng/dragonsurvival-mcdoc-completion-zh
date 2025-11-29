@@ -5,6 +5,25 @@
 
 ---
 
+## v2.0.1 - 2025-11-30
+
+> 本次更新适用于 [DragonSurvival-1.21.1-v2.0.49-29.11.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7274907) 版本及以上  
+
+### **新增功能**
+
+   - 资源包部分
+     - 对于 `parts` 增加了新的可选参数 `is_glowing`
+   
+   - 数据包部分
+     - 对于谓词
+       - `dragonsurvival:dragon_predicate` 子谓词
+         - 增加了 `ability_levels` 检查技能/能力等级
+     - 对于命令
+       - `dragon-ability` 增加了 `query` 查询语句
+     - 对于 `dragon_ability` 新增接口支持
+       - `dragonsurvival:damage` 的更改错误的在上一个版本过早的提交;
+       - `dragonsurvival:damage` 简化了 `expression` 参数的描述直接指向[链接](https://ezylang.github.io/EvalEx/references/references.html)
+
 ## v2.0.0 - 2025-11-26
 
 > 本次更新适用于 [DragonSurvival-1.21.1-v2.0.48-23.11.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7253527) 版本及以上  
