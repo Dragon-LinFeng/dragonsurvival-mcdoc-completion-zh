@@ -17,7 +17,7 @@ dispatch minecraft:entity_sub_predicate[dragonsurvival:dragon_predicate] to stru
         [#[id="dragonsurvival:dragon_body"] string] |
     ),
     /// 检查技能/能力等级
-    ability_levels?: AbilityLevel,
+    ability_levels?: [AbilityLevel],
     /// 检查龙的成长是否被手动停止
     is_growth_stopped?: boolean,
     /// 当末影龙死亡且玩家曾对其造成伤害时设置此标志

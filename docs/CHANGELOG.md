@@ -4,6 +4,12 @@
 - [蓝奏云](https://wwq.lanzouo.com/b014wp9spg) 密码:5bzn
 
 ---
+## v2.0.2 - **紧急修复** - 2025-11-30
+
+> 该版本适用于 [DragonSurvival-1.21.1-v2.0.49-29.11.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7274907) 版本及以上  
+
+- **修复**: 
+   - 实体子谓词 `dragonsurvival:dragon_predicate` 中 `ability_levels` 参数的数据应为列表包裹的struct, 这里错误的设为了struct。这会导致包含该错误的谓词失效
 
 ## v2.0.1 - 2025-11-30
 
