@@ -61,7 +61,8 @@ dispatch minecraft:resource[dragonsurvival:dragon_body] to struct DragonBody {
     unlockable_behavior?: UnlockableBehavior,
     /// 属性修饰符，始终以"等级"1计算
     modifiers?: [Modifier],
-    /// 决定翅膀是否可以隐藏(默认：true)
+    /// 决定翅膀是否可以隐藏
+    /// (默认：true)
     can_hide_wings?: boolean,
     /// 此身体类型使用的模型文件 (位于`assets/<命名空间>/geo/`下的`.geo.json`文件)
     /// (不填写默认使用`dragonsurvival:dragon_model`)
@@ -112,16 +113,22 @@ struct DragonEmote {
     /// 动画持续时间
     duration?: int,
     /// 动画是否循环播放
+    /// (默认:fasle)
     loops?: boolean,
     /// 动画是否允许与其他动画混合
+    /// (默认:fasle)
     blend?: boolean,
     /// 该动画是否锁定头部
+    /// (默认:fasle)
     locks_head?: boolean,
     /// 该动画是否锁定尾巴
+    /// (默认:fasle)
     locks_tail?: boolean,
     /// 是否主要在第三人称下显示
+    /// (默认:fasle)
     third_person?: boolean,
     /// 是否允许玩家在动画中移动
+    /// (默认:fasle)
     can_move?: boolean,
     /// 动画所用音效
     sound?: Sound,

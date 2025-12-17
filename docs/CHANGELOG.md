@@ -4,6 +4,39 @@
 - [蓝奏云](https://wwq.lanzouo.com/b014wp9spg) 密码:5bzn
 
 ---
+## v2.0.3 - 2025-12-17
+
+> 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-29.11.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上  
+
+### **错误修复**:
+
+- 为整个工具中缺少默认值提示的可选布尔项增加了默认值提示
+
+- 资源包部分
+   - 重新调整了部分值的说明，使其更清晰
+
+- 数据包部分
+   - 修正了 projectile_data 缺失的 `is_impact_projectile` 参数
+   - 修正了 `data_maps` 中物种会对标签报错的问题
+   - 修正了 `dragon_ability` 中错误的 `probability` 必选项，已更改为可选项
+   - 修正了 `dragon_ability` 中 entity_effect 下的 dragonsurvival:cooldown_recovery 行为的 `abilities` 项使用的错误参数id`dragonsurvival:ability`，已更改为正确的 `dragonsurvival:dragon_ability`
+   - 修正了 `dragon_ability` 中 entity_effect 下的 dragonsurvival:cooldown_recovery 行为的 `action_type` 项存在的错误参数 `add`, 已更改为 `reduce`
+
+### **新增功能**:
+
+- 数据包部分
+   - 对于 `dragon_ability` 新增接口支持
+      - `dragonsurvival:passive` 触发器新增选项
+         - `dragonsurvival:on_block_break` 当破坏方块时触发
+         - `dragonsurvival:on_key_pressed` 当按下按键时触发
+         - `dragonsurvival:on_key_released` 当松开按键时触发
+      - `dragonsurvival:block_vision` 让指定方块生成粒子进行标记
+         - 增加参数 `particle_rate`粒子速率 、 `color_shift_rate`颜色变化速率
+         - 为参数`colors`增加新的内容可以为颜色设置透明度
+         - 为参数`display_type`增加了新的类型 `simple_shader`在方块表面简单的覆盖一层着色
+      - `dragonsurvival:item_conversion` 转换物品实体的物品类型
+         - 为 `item_conversions.items_to` 增加新参数 `conversion_rate`转换量、`particles`粒子
+
 ## v2.0.2 - **紧急修复** - 2025-11-30
 
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.49-29.11.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7274907) 版本及以上  

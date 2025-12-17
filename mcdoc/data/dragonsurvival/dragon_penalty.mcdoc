@@ -24,7 +24,8 @@ struct DurationInstanceBase {
     /// - 若用图片`assets/dragonsurvival/textures/ability_effect/fire_immunity.png`
     /// - 请这么写`"dragonsurvival:textures/ability_effect/fire_immunity.png"`
     custom_icon?: PNG_Path,
-    /// 如果启用，实例将不会显示为效果(默认：false)
+    /// 如果启用，实例将不会显示为效果\
+    /// (默认：false)
     is_hidden?: boolean,
 }
 
@@ -299,6 +300,7 @@ dispatch dragonsurvival:penalty_trigger[dragonsurvival:supply] to struct SupplyT
     /// 可用于缓解或消除缺陷的特殊物品列表
     recovery_items?: [RecoveryItems],
     /// 是否在UI界面中以类似饥饿条的形式显示此缺陷状态
+    /// (默认:false)
     display_like_hunger_bar?: boolean,
     /// 当惩罚效果触发时使用的粒子效果
     particles_on_trigger?: Particle,

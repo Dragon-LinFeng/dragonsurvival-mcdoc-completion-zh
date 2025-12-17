@@ -10,7 +10,7 @@ type PNG_Path = #[match_regex="^(?:([a-z0-9_.-]+):)?([a-z0-9/._-]+\\.png)$"] str
 dispatch minecraft:resource[dragonsurvival:data_map_dragon_species] to struct DataMapDragonSpecies {
 	replace?: boolean,
 	values: struct SpeciesID {
-		[#[id(registry="dragonsurvival:dragon_species")] string]: (DragonBeaconData | StageResourcesID | EndPlatform | [DietEntry]),
+		[#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string]: (DragonBeaconData | StageResourcesID | EndPlatform | [DietEntry]),
 	},
 }
 
@@ -29,7 +29,7 @@ struct Food {
 	/// 吃掉后恢复的饱和度
 	saturation: float,
 	/// 当玩家的饥饿槽/饱和度满的时候，物品是否可以吃?
-	/// 默认为: false
+	/// (默认: false)
 	can_always_eat?: boolean,
 	/// 吃这个物品所需的时间(以秒为单位)
 	/// 默认为`1.6`

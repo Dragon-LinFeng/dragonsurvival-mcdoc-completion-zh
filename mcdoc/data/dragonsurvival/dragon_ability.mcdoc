@@ -68,6 +68,7 @@ dispatch minecraft:resource[dragonsurvival:dragon_ability] to struct DragonAbili
     /// 定义能力实际效果
     actions: [Action],
     /// 决定是否可以通过物种界面按CTRL+点击来禁用该能力
+    /// (默认: true)
     can_be_manually_disabled?: boolean,
     /// 此能力的图标
     icon: LevelBasedResource,
@@ -125,6 +126,9 @@ dispatch minecraft:resource[dragonsurvival:activation_trigger] to struct Activat
     /// - `dragonsurvival:on_target_hit` 当目标受到伤害时触发
     /// - `dragonsurvival:on_target_killed` 当目标被击杀时触发
     /// - `dragonsurvival:on_death` 当死亡时触发
+    /// - `dragonsurvival:on_block_break` 当破坏方块时
+    /// - `dragonsurvival:on_key_pressed` 当按键按下时
+    /// - `dragonsurvival:on_key_released` 当按键施放时
     trigger_type: ActivationTriggers,
     ...dragonsurvival:activation_trigger[[trigger_type]],
 }
@@ -140,6 +144,12 @@ enum(string) ActivationTriggers {
     On_Target_Killed    = "dragonsurvival:on_target_killed",
     /// 当死亡时触发
     On_Death            = "dragonsurvival:on_death",
+    /// 当破坏方块时触发
+    On_Block_Break      = "dragonsurvival:on_block_break",
+    /// 当按下按键时触发
+    On_Key_Pressed      = "dragonsurvival:on_key_pressed",
+    /// 当松开按键时触发
+    On_Key_Released     = "dragonsurvival:on_key_released",
 }
 
 dispatch dragonsurvival:activation_trigger[dragonsurvival:constant] to struct ConstantTrigger { }
@@ -182,6 +192,162 @@ dispatch dragonsurvival:activation_trigger[dragonsurvival:on_target_killed] to s
 
 dispatch dragonsurvival:activation_trigger[dragonsurvival:on_death] to struct OnDeath { }
 
+dispatch dragonsurvival:activation_trigger[dragonsurvival:on_block_break] to struct OnBlockBreak {
+    /// 可用于进行伤害上下文相关检查
+    /// 可用参数：
+    /// - this_entity(死亡的目标)
+    /// - origin
+    /// - damage_source
+    /// - attacking_entity(可选)
+    /// - direct_attacking_entity(可选)
+    /// 谓词(https://zh.minecraft.wiki/w/谓词)
+    condition: LootCondition,
+}
+
+dispatch dragonsurvival:activation_trigger[dragonsurvival:on_key_pressed] to struct OnKeyPressed { 
+    /// https://zh.minecraft.wiki/w/键控代码
+    keys: [Keys],
+}
+
+dispatch dragonsurvival:activation_trigger[dragonsurvival:on_key_released] to struct OnKeyReleased { 
+    /// https://zh.minecraft.wiki/w/键控代码
+    keys: [Keys],
+}
+
+enum(string) Keys {
+    Key_Keyboard_Unknown         = "key.keyboard.unknown",
+    Key_Mouse_Left               = "key.mouse.left",
+    Key_Mouse_Right              = "key.mouse.right",
+    Key_Mouse_Middle             = "key.mouse.middle",
+    Key_Mouse_4                  = "key.mouse.4",
+    Key_Mouse_5                  = "key.mouse.5",
+    Key_Mouse_6                  = "key.mouse.6",
+    Key_Mouse_7                  = "key.mouse.7",
+    Key_Mouse_8                  = "key.mouse.8",
+    Key_Mouse_                   = "key.mouse.#",
+    Key_Keyboard_0               = "key.keyboard.0",
+    Key_Keyboard_1               = "key.keyboard.1",
+    Key_Keyboard_2               = "key.keyboard.2",
+    Key_Keyboard_3               = "key.keyboard.3",
+    Key_Keyboard_4               = "key.keyboard.4",
+    Key_Keyboard_5               = "key.keyboard.5",
+    Key_Keyboard_6               = "key.keyboard.6",
+    Key_Keyboard_7               = "key.keyboard.7",
+    Key_Keyboard_8               = "key.keyboard.8",
+    Key_Keyboard_9               = "key.keyboard.9",
+    Key_Keyboard_A               = "key.keyboard.a",
+    Key_Keyboard_B               = "key.keyboard.b",
+    Key_Keyboard_C               = "key.keyboard.c",
+    Key_Keyboard_D               = "key.keyboard.d",
+    Key_Keyboard_E               = "key.keyboard.e",
+    Key_Keyboard_F               = "key.keyboard.f",
+    Key_Keyboard_G               = "key.keyboard.g",
+    Key_Keyboard_H               = "key.keyboard.h",
+    Key_Keyboard_I               = "key.keyboard.i",
+    Key_Keyboard_J               = "key.keyboard.j",
+    Key_Keyboard_K               = "key.keyboard.k",
+    Key_Keyboard_L               = "key.keyboard.l",
+    Key_Keyboard_M               = "key.keyboard.m",
+    Key_Keyboard_N               = "key.keyboard.n",
+    Key_Keyboard_O               = "key.keyboard.o",
+    Key_Keyboard_P               = "key.keyboard.p",
+    Key_Keyboard_Q               = "key.keyboard.q",
+    Key_Keyboard_R               = "key.keyboard.r",
+    Key_Keyboard_S               = "key.keyboard.s",
+    Key_Keyboard_T               = "key.keyboard.t",
+    Key_Keyboard_U               = "key.keyboard.u",
+    Key_Keyboard_V               = "key.keyboard.v",
+    Key_Keyboard_W               = "key.keyboard.w",
+    Key_Keyboard_X               = "key.keyboard.x",
+    Key_Keyboard_Y               = "key.keyboard.y",
+    Key_Keyboard_Z               = "key.keyboard.z",
+    Key_Keyboard_F1              = "key.keyboard.f1",
+    Key_Keyboard_F2              = "key.keyboard.f2",
+    Key_Keyboard_F3              = "key.keyboard.f3",
+    Key_Keyboard_F4              = "key.keyboard.f4",
+    Key_Keyboard_F5              = "key.keyboard.f5",
+    Key_Keyboard_F6              = "key.keyboard.f6",
+    Key_Keyboard_F7              = "key.keyboard.f7",
+    Key_Keyboard_F8              = "key.keyboard.f8",
+    Key_Keyboard_F9              = "key.keyboard.f9",
+    Key_Keyboard_F10             = "key.keyboard.f10",
+    Key_Keyboard_F11             = "key.keyboard.f11",
+    Key_Keyboard_F12             = "key.keyboard.f12",
+    Key_Keyboard_F13             = "key.keyboard.f13",
+    Key_Keyboard_F14             = "key.keyboard.f14",
+    Key_Keyboard_F15             = "key.keyboard.f15",
+    Key_Keyboard_F16             = "key.keyboard.f16",
+    Key_Keyboard_F17             = "key.keyboard.f17",
+    Key_Keyboard_F18             = "key.keyboard.f18",
+    Key_Keyboard_F19             = "key.keyboard.f19",
+    Key_Keyboard_F20             = "key.keyboard.f20",
+    Key_Keyboard_F21             = "key.keyboard.f21",
+    Key_Keyboard_F22             = "key.keyboard.f22",
+    Key_Keyboard_F23             = "key.keyboard.f23",
+    Key_Keyboard_F24             = "key.keyboard.f24",
+    Key_Keyboard_F25             = "key.keyboard.f25",
+    Key_Keyboard_Num_Lock        = "key.keyboard.num.lock",
+    Key_Keyboard_Keypad_0        = "key.keyboard.keypad.0",
+    Key_Keyboard_Keypad_1        = "key.keyboard.keypad.1",
+    Key_Keyboard_Keypad_2        = "key.keyboard.keypad.2",
+    Key_Keyboard_Keypad_3        = "key.keyboard.keypad.3",
+    Key_Keyboard_Keypad_4        = "key.keyboard.keypad.4",
+    Key_Keyboard_Keypad_5        = "key.keyboard.keypad.5",
+    Key_Keyboard_Keypad_6        = "key.keyboard.keypad.6",
+    Key_Keyboard_Keypad_7        = "key.keyboard.keypad.7",
+    Key_Keyboard_Keypad_8        = "key.keyboard.keypad.8",
+    Key_Keyboard_Keypad_9        = "key.keyboard.keypad.9",
+    Key_Keyboard_Keypad_Add      = "key.keyboard.keypad.add",
+    Key_Keyboard_Keypad_Decimal  = "key.keyboard.keypad.decimal",
+    Key_Keyboard_Keypad_Enter    = "key.keyboard.keypad.enter",
+    Key_Keyboard_Keypad_Equal    = "key.keyboard.keypad.equal",
+    Key_Keyboard_Keypad_Multiply = "key.keyboard.keypad.multiply",
+    Key_Keyboard_Keypad_Divide   = "key.keyboard.keypad.divide",
+    Key_Keyboard_Keypad_Subtract = "key.keyboard.keypad.subtract",
+    Key_Keyboard_Down            = "key.keyboard.down",
+    Key_Keyboard_Left            = "key.keyboard.left",
+    Key_Keyboard_Right           = "key.keyboard.right",
+    Key_Keyboard_Up              = "key.keyboard.up",
+    Key_Keyboard_Apostrophe      = "key.keyboard.apostrophe",
+    Key_Keyboard_Backslash       = "key.keyboard.backslash",
+    Key_Keyboard_Comma           = "key.keyboard.comma",
+    Key_Keyboard_Equal           = "key.keyboard.equal",
+    Key_Keyboard_Grave_Accent    = "key.keyboard.grave.accent",
+    Key_Keyboard_Left_Bracket    = "key.keyboard.left.bracket",
+    Key_Keyboard_Minus           = "key.keyboard.minus",
+    Key_Keyboard_Period          = "key.keyboard.period",
+    Key_Keyboard_Right_Bracket   = "key.keyboard.right.bracket",
+    Key_Keyboard_Semicolon       = "key.keyboard.semicolon",
+    Key_Keyboard_Slash           = "key.keyboard.slash",
+    Key_Keyboard_Space           = "key.keyboard.space",
+    Key_Keyboard_Tab             = "key.keyboard.tab",
+    Key_Keyboard_Left_Alt        = "key.keyboard.left.alt",
+    Key_Keyboard_Left_Control    = "key.keyboard.left.control",
+    Key_Keyboard_Left_Shift      = "key.keyboard.left.shift",
+    Key_Keyboard_Left_Win        = "key.keyboard.left.win",
+    Key_Keyboard_Right_Alt       = "key.keyboard.right.alt",
+    Key_Keyboard_Right_Control   = "key.keyboard.right.control",
+    Key_Keyboard_Right_Shift     = "key.keyboard.right.shift",
+    Key_Keyboard_Right_Win       = "key.keyboard.right.win",
+    Key_Keyboard_Enter           = "key.keyboard.enter",
+    Key_Keyboard_Escape          = "key.keyboard.escape",
+    Key_Keyboard_Backspace       = "key.keyboard.backspace",
+    Key_Keyboard_Delete          = "key.keyboard.delete",
+    Key_Keyboard_End             = "key.keyboard.end",
+    Key_Keyboard_Home            = "key.keyboard.home",
+    Key_Keyboard_Insert          = "key.keyboard.insert",
+    Key_Keyboard_Page_Down       = "key.keyboard.page.down",
+    Key_Keyboard_Page_Up         = "key.keyboard.page.up",
+    Key_Keyboard_Caps_Lock       = "key.keyboard.caps.lock",
+    Key_Keyboard_Pause           = "key.keyboard.pause",
+    Key_Keyboard_Scroll_Lock     = "key.keyboard.scroll.lock",
+    Key_Keyboard_Menu            = "key.keyboard.menu",
+    Key_Keyboard_Print_Screen    = "key.keyboard.print.screen",
+    Key_Keyboard_World_1         = "key.keyboard.world.1",
+    Key_Keyboard_World_2         = "key.keyboard.world.2",
+    Scancode_                    = "scancode.###"
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 dispatch dragonsurvival:activation[dragonsurvival:simple] to struct SimpleActivation {
@@ -196,7 +362,8 @@ dispatch dragonsurvival:activation[dragonsurvival:simple] to struct SimpleActiva
     /// - 能力被阻止('usage_blocked'条件)
     /// (默认情况下，每个能力都会有一个包含"法力不足"消息的通知条目)
     notification?: Notification,
-    /// 施法者是否可以在施法时移动(默认：true)
+    /// 施法者是否可以在施法时移动
+    /// (默认：true)
     can_move_while_casting?: boolean,
     /// 在能力的各个阶段播放的音效
     /// (简单激活不支持循环音效)
@@ -225,7 +392,8 @@ dispatch dragonsurvival:activation[dragonsurvival:channeled] to struct Channeled
     /// - 能力被阻止('usage_blocked'条件)
     /// (默认情况下，每个能力都会有一个包含"法力不足"消息的通知条目)
     notification?: Notification,
-    /// 施法者是否可以在施法时移动(默认：true)
+    /// 施法者是否可以在施法时移动
+    /// (默认：true)
     can_move_while_casting?: boolean,
     /// 在能力的各个阶段播放的音效
     /// (简单激活不支持循环音效)
@@ -680,6 +848,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:damage] to struct D
     /// - 默认值: `"amount * scale"`
     expression?: string,
     /// 是否在造成伤害时临时装备龙爪上的工具
+    /// (默认: false)
     use_claw?: boolean,
 }
 
@@ -959,8 +1128,12 @@ struct ItemConversionData {
 struct ItemTo {
     /// 需要转化成的物品id
     item: #[id="item"] string,
+    /// 转换量
+    conversion_rate?: int @ 1..64,
     /// 权重值
     weight: int @ 0..,
+    /// 粒子
+    particles?: ParticleEffect_Entity
 }
 
 // ----- # ----- //
@@ -1078,14 +1251,31 @@ struct BlockVision {
     colors: [(
         #[color="hex_rgb"] string |
         #[color="named"] TextColor |
+        ColorEntry |
     )],
+    /// 粒子速率
+    /// 默认: 10
+    particle_rate?: int @ 1..,
+    /// 颜色变化速率
+    /// 默认: 1
+    color_shift_rate?: double @ 0..10,
+}
+
+struct ColorEntry {
+    color: (#[color="hex_rgb"] string |#[color="named"] TextColor),
+    /// 默认: 0.3
+    alpha?: float @ 0..1,
 }
 
 enum(string) DisplayType {
     /// 勾勒方块轮廓，可以透过其他方块看到
-    Outline     = "outline",
+    Outline         = "outline",
     /// 在方块周围创建粒子
-    Particles   = "particles",
+    Particles       = "particles",
+    /// 在方块表面简单的覆盖一层着色
+    Simple_Shader   = "simple_shader",
+    /// 空
+    None            = "none",
 }
 
 // ----- # ----- //
@@ -1104,7 +1294,8 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:smelting] to struct
     /// 如果物品在3秒内不再被熔炼，进度将重置
     /// (如果未指定进度，物品将立即熔炼完成)
     progress?: LevelBasedValue,
-    /// 是否授予熔炼经验(在配方中定义)(默认：true)
+    /// 是否授予熔炼经验(在配方中定义)
+    /// (默认：true)
     grants_experience?: boolean,
 }
 
@@ -1186,7 +1377,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:use_item] to struct
     /// 控制能力成功触发的几率
     /// 0 (0%) 到 1 (100%)
     /// 默认 0
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
     /// 能力成功触发时播放的音效
     sound?: SoundEventRef,
     /// 过滤哪些实体可以成为目标
@@ -1209,7 +1400,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:dragon_growth] to s
     /// 控制能力成功触发的几率
     /// 0 (0%) 到 1 (100%)
     /// 默认 0
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
 }
 
 enum(string) ActionType {
@@ -1238,7 +1429,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:mana_recovery] to s
     /// 触发概率
     /// 0 (0%) 到 1 (100%)
     /// 默认 0
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
 }
 
 // ----- # ----- //
@@ -1267,11 +1458,11 @@ enum(string) ExperienceType {
 
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:cooldown_recovery] to struct CooldownRecoveryEffect {
     /// 可选的能力/技能集合
-    abilities?: #[id(registry="dragonsurvival:ability", tags="allowed")] string,
+    abilities?: #[id(registry="dragonsurvival:dragon_ability", tags="allowed")] string,
     /// 决定如何应用变化
-    /// - add(相加)
+    /// - reduce(减少)
     /// - set(设置)
-    action_type: ActionType,
+    action_type: CooldownRecoveryActionType,
     /// 决定数值的计算方式
     /// - percent(百分比)
     /// - flat(数值)
@@ -1281,9 +1472,15 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:cooldown_recovery] 
     /// 触发概率
     /// 0 (0%) 到 1 (100%)
     /// 默认 0
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
     /// 是否排除自身能力
-    exclude_this: boolean,
+    /// (默认: true)
+    exclude_this?: boolean,
+}
+
+enum(string) CooldownRecoveryActionType {
+    Set = "set",
+    Reduce = "reduce"
 }
 
 // ----- # ----- //
@@ -1306,7 +1503,8 @@ struct DurationInstanceBase {
     /// - 若用图片`assets/dragonsurvival/textures/ability_effect/fire_immunity.png`
     /// - 请这么写`"dragonsurvival:textures/ability_effect/fire_immunity.png"`
     custom_icon?: PNG_Path,
-    /// 如果启用，实例将不会显示为效果(默认：false)
+    /// 如果启用，实例将不会显示为效果
+    /// (默认：false)
     is_hidden?: boolean,
 }
 
@@ -1494,7 +1692,7 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:use_item] to struct 
     /// 指定要使用的具体物品
     item: ItemStack,
     /// 控制能力成功触发的几率
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
     /// 能力成功触发时播放的音效
     sound?: SoundEventRef,
     /// 过滤哪些方块可以作为目标
@@ -1506,11 +1704,12 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:explosion] to struct
     /// 概率
     /// 0 (0%) 到 1 (100%)
     /// 默认 0
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
     /// 爆炸强度
     power: LevelBasedValue,
     /// 能产生火焰
-    fire: boolean,
+    /// (默认: true)
+    fire?: boolean,
     /// 伤害类型(https://zh.minecraft.wiki/w/伤害类型定义格式)
     damage_type: #[id="damage_type"] string,
 }
@@ -1522,7 +1721,7 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:block_harvest] to st
     /// 概率
     /// 0 (0%) 到 1 (100%)
     /// 默认 0
-    probability: LevelBasedValue,
+    probability?: LevelBasedValue,
     /// 指定所用的工具
     tool?: ItemStack,
 }

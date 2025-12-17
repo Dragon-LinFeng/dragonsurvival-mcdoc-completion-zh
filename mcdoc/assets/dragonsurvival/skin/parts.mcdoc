@@ -20,15 +20,15 @@ dispatch minecraft:resource[dragonsurvival:skin_parts] to struct SkinParts {
     /// - 可通过龙之生存mod中自带的`assets\dragonsurvival\colors.py`脚本批处理
     average_hue?: double,
     /// 可能有颜色的
-    /// 默认: true
+    /// (默认: true)
     is_colorable?: boolean,
-    /// 包含在随机选择器中
-    /// 默认: true
+    /// 该组件是否包含在随机选择器中
+    /// (默认: true)
     include_in_randomizer?: boolean,
-    /// 色相可以随机化
-    /// 默认: true
+    /// 色相是否允许被随机化
+    /// (默认: true)
     is_hue_randomizable?: boolean,
-    /// 是否发光
-    /// 默认: false
+    /// 是否默认发光
+    /// (默认: false)
     is_glowing?: boolean
 }

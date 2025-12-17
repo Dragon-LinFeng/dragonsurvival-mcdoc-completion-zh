@@ -13,7 +13,8 @@ type LevelBasedValue = (float | LevelBasedValueMap)
 ///-----------------------------------------------------------------------------
 
 dispatch minecraft:resource[dragonsurvival:dragon_stage] to struct DragonStage {
-    /// 决定此阶段是否是默认阶段全局列表的一部分(默认：false)
+    /// 决定此阶段是否是默认阶段全局列表的一部分
+    /// (默认：false)
     is_default?: boolean,
     /// 阶段的最小和最大成长值
     growth_range: Bounds,

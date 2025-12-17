@@ -28,6 +28,9 @@ dispatch minecraft:resource[dragonsurvival:projectile_data] to struct Projectile
 struct GeneralData {
     /// 注册的自定义弹射物名称
     name: #[projectile_data(definition=true)] string,
+    /// 决定该实体能不能破坏击中的 陶罐、紫颂花 等方块
+    /// (默认: false)
+    is_impact_projectile?: boolean,
     /// 击中方块时执行的效果
     /// - 执行者: `server`
     /// - 执行位置: 击中方块的方块中心
