@@ -17,7 +17,7 @@ dispatch minecraft:resource[dragonsurvival:projectile_data] to struct Projectile
     general_data: GeneralData,
     /// 决定自定义弹射物的外观
     /// - 若是`texture`+`piercing_level`则是自定义箭类实体
-    /// - 若是`resources`+`behaviour_data`则是自定义弹射物实体
+    /// - 若是`resources`+`behaviour_data`则是自定义火球类实体
     type_data?: (
         GenericArrowData |
         GenericBallData |
@@ -397,6 +397,7 @@ struct GenericArrowData {
 
 struct GenericBallData {
     /// 贴图数据
+    /// 空/无效 数据可能导致游戏崩溃
     resources: LevelBasedResource,
     /// 基本数据
     behaviour_data: BehaviourData,
@@ -447,7 +448,7 @@ struct BehaviourData {
 // ----- # ----- //
 struct LevelBasedResource {
     /// 根据等级决定将使用的贴图
-    /// 空数据可能导致游戏崩溃
+    /// 空/无效 数据可能导致游戏崩溃
     texture_entries: [ResourceLocation] @ 1..,
 }
 

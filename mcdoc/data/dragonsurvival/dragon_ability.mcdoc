@@ -1246,6 +1246,7 @@ struct BlockVision {
     /// 决定如何标记方块
     /// - `outline` 勾勒方块轮廓，可以透过其他方块看到
     /// - `particles` 在方块周围创建粒子
+    /// - `simple_shader` 在方块表面简单的覆盖一层着色
     display_type: DisplayType,
     /// 要使用的颜色 - 如果指定了多个，将在它们之间循环
     colors: [(
