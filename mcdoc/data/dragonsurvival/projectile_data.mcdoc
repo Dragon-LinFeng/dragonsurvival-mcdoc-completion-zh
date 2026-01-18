@@ -13,7 +13,11 @@ type LevelBasedValue = (float | LevelBasedValueMap)
 
 // ---------------------------------------------------------------------------------------------------------------------
 dispatch minecraft:resource[dragonsurvival:projectile_data] to struct ProjectileData {
-    /// 决定自定义弹射物的效果
+    /// 决定自定义弹射物的效果  
+    /// - 执行顺序:
+    ///   1. ticking_effects
+    ///   2. entity_hit_effects / block_hit_effects
+    ///   4. common_hit_effects
     general_data: GeneralData,
     /// 决定自定义弹射物的外观
     /// - 若是`texture`+`piercing_level`则是自定义箭类实体
