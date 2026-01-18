@@ -122,8 +122,10 @@ struct ProjectileTargeting_GeneralData {
     /// 定义将执行的效果列表
     effects: [ProjectileTargeting_GeneralData_Effect],
     /// 效果触发的频率(current_tick % rate == 0)
+    /// (默认: 0)
     tick_rate?: int,
     /// 效果触发的概率
+    /// (默认：1)
     chance?: float,
 }
 
@@ -241,6 +243,7 @@ dispatch dragonsurvival:projectile_block_effect[dragonsurvival:area_cloud] to st
     /// 药水云的持续时间
     duration: LevelBasedValue,
     /// 药水云成功生成的概率
+    /// 0 (0%) 到 1 (100%)
     probability: double @ 0..1,
     /// 药水云生效前的延迟时间
     delay?: LevelBasedValue,
@@ -307,7 +310,8 @@ struct PotionData {
     /// 控制效果的持续时间(ticks)
     duration: LevelBasedValue,
     /// 控制效果触发的概率
-    /// (默认：1(100%))
+    /// 0 (0%) 到 1 (100%)
+    /// (默认：1)
     probability?: LevelBasedValue,
     /// 是否显示效果粒子
     /// (默认：false)

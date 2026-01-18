@@ -886,7 +886,7 @@ struct PotionData {
     duration: LevelBasedValue,
     /// 控制效果触发的概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
     /// 是否显示效果粒子
     /// (默认：false)
@@ -1434,7 +1434,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:mana_recovery] to s
     amount: LevelBasedValue,
     /// 触发概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
 }
 
@@ -1449,7 +1449,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:experience] to stru
     amount: LevelBasedValue,
     /// 触发概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
 }
 
@@ -1477,7 +1477,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:cooldown_recovery] 
     amount: LevelBasedValue,
     /// 触发概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
     /// 是否排除自身能力
     /// (默认: true)
@@ -1576,7 +1576,6 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:bonemeal] to struct 
     attempts: LevelBasedValue,
     /// 这不是每次尝试，而是整个效果应用的概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
     probability: LevelBasedValue
 ,
 }
@@ -1588,7 +1587,6 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:conversion] to struc
     conversion_data: [BlockConversionData],
     /// 应用效果的概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
     probability: LevelBasedValue,
 }
 
@@ -1645,7 +1643,6 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:area_cloud] to struc
     duration: LevelBasedValue,
     /// 药水云成功生成的概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
     probability: LevelBasedValue,
     /// 药水云生效前的延迟时间
     delay?: LevelBasedValue,
@@ -1662,7 +1659,6 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:block_break] to stru
     valid_blocks: BlockPredicateSpecial,
     /// 破坏方块的概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
     probability: LevelBasedValue,
     /// 破坏方块时掉落战利品(如果有的话)
     /// (默认：false)
@@ -1709,7 +1705,7 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:use_item] to struct 
 dispatch dragonsurvival:ability_block_effect[dragonsurvival:explosion] to struct ExplodeBlockEffect_Block {
     /// 概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
     /// 爆炸强度
     power: LevelBasedValue,
@@ -1726,7 +1722,7 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:block_harvest] to st
     valid_blocks: BlockPredicate,
     /// 概率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
     /// 指定所用的工具
     tool?: ItemStack,
