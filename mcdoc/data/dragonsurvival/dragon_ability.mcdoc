@@ -1092,7 +1092,12 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:on_attack] to struc
 
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:flight] to struct FlightEffect_Entity {
     level_requirement: int @ 0..255,
-    /// 自定义飞行图标(默认：dragonsurvival:textures/ability_effect/generic_icons/dragon_wings.png)
+    /// 自定义飞行效果图标
+	/// 此处的资源的注册方式与原版的`"命名空间:资源路径"`不同
+	/// - 若用图片`assets/dragonsurvival/textures/ability_effect/generic_icons/dragon_wings.png`
+	/// - 请这么写`"dragonsurvival:textures/ability_effect/generic_icons/dragon_wings.png"`
+    ///    
+    /// (默认：dragonsurvival:textures/ability_effect/generic_icons/dragon_wings.png)
     icon?: PNG_Path,
 }
 
