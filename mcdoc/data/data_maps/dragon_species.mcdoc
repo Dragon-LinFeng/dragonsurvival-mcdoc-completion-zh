@@ -89,8 +89,10 @@ struct DietEntry {
 		#[regex_pattern] string |
 	),
 	/// 定义具体的食物效果
-	/// - 若不指定则使用食物原本的效果
 	properties?: Food,
+	/// 是否继承物品原本拥有的状态效果
+	/// (默认:：false)
+	retain_effects?: boolean
 }
 
 // ----- # ----- //
