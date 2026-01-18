@@ -84,7 +84,7 @@ struct MiscResources {
     /// - 若用图片`assets/dragonsurvival/textures/gui/custom/food_icons/sea_food_icons.png`
     /// - 请这么写`"dragonsurvival:textures/gui/custom/food_icons/sea_food_icons.png"`
     food_sprites?: PNG_Path,
-    /// 法力精灵图标 - 如果未指定，将使用通用纹理
+    /// 法力图标 - 如果未指定，将使用通用纹理
     /// (以物种的主色调着色)
     mana_sprites?: ManaSprites,
     /// 在龙祭坛和物种界面中使用的横幅
@@ -107,15 +107,13 @@ struct MiscResources {
     growth_crystal: FillIcon,
     /// 确定饮食条目的工具提示渲染方式
     food_tooltip: FoodTooltip,
-    /// 确定：
-    /// - 龙饮食工具提示文本和边框颜色
-    /// - 通用法力精灵图标颜色
+    /// 龙饮食工具提示文本和边框颜色  
+    /// 通用法力图标颜色
     primary_color: (
         #[color="hex_rgb"] string |
         #[color="named"] TextColor |
     ),
-    /// 确定：
-    /// - 龙饮食工具提示边框颜色
+    /// 龙饮食工具提示边框颜色
     secondary_color: (
         #[color="hex_rgb"] string |
         #[color="named"] TextColor |
