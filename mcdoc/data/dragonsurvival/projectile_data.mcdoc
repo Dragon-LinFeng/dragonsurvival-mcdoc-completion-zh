@@ -64,7 +64,7 @@ struct GeneralData {
     /// 击中实体的谓词判断(用于`entity_hit_effects`)
     /// 具有施法者和目标之间的上下文，允许进行适当的盟友或敌人检查
     /// 谓词(https://zh.minecraft.wiki/w/谓词)
-    entity_hit_condition: LootCondition,
+    entity_hit_condition: (LootCondition | Empty),
     /// 击中实体时执行的效果
     /// - 执行者：被击中的实体
     /// - 执行位置：被击中的实体
@@ -92,6 +92,8 @@ struct GeneralData {
     ///     - `执行位置`: 弹射物为中心范围内所有符合的方块中心
     ticking_effects: [ProjectileTargeting],
 }
+
+struct Empty {}
 
 // --- 特殊执行器 --- //
 struct ProjectileTargeting {
