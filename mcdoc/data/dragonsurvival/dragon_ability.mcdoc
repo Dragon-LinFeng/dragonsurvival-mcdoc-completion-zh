@@ -77,7 +77,7 @@ dispatch minecraft:resource[dragonsurvival:dragon_ability] to struct DragonAbili
 
 struct LevelBasedResource {
     /// 根据等级决定将使用的贴图
-    texture_entries: [LevelBasedResourceEntry],
+    texture_entries: [LevelBasedResourceEntry] @ 1..,
 }
 
 struct Activation {
