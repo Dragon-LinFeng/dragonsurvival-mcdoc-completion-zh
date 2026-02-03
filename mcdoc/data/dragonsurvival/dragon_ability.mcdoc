@@ -427,21 +427,43 @@ struct Sound {
     start?: #[id="sound_event"] string,
     /// 蓄力开始时的音效
     charging?: #[id="sound_event"] string,
-    looping?: #[id="sound_event"] string,
+    ...dragonsurvival:animatioin[[%parent.activation_type]],
     /// 施法结束时的音效
     end?: #[id="sound_event"] string,
 }
 
+dispatch dragonsurvival:sound[dragonsurvival:passive] to struct PassiveSound {
+    /// 施法中的循环音效
+    looping?: #[id="sound_event"] string,
+}
+
+dispatch dragonsurvival:sound[dragonsurvival:channeled] to struct ChanneledSound {
+    /// 施法中的循环音效
+    looping?: #[id="sound_event"] string,
+}
+
 struct Animations {
-    /// 施法开始时的动画
+    /// 最开始蓄力的动画
+    /// (例如 吐息喷吐前的蓄力动画)
     start_and_charging?: (
         CompoundAbilityAnimation |
         SimpleAbilityAnimation |
     ),
-    /// 施法中的动画
-    looping?: SimpleAbilityAnimation,
-    /// 施法结束动画
+    ...dragonsurvival:animatioin[[%parent.activation_type]],
+    /// 施法结束的动画
     end?: SimpleAbilityAnimation,
+}
+
+dispatch dragonsurvival:animatioin[dragonsurvival:passive] to struct PassiveAnimations {
+    /// 施法中的循环动画
+    /// (例如 吐息喷吐时的张嘴动画)
+    looping?: SimpleAbilityAnimation,
+}
+
+dispatch dragonsurvival:animatioin[dragonsurvival:channeled] to struct ChanneledAnimations {
+    /// 施法中的循环动画
+    /// (例如 吐息喷吐时的张嘴动画)
+    looping?: SimpleAbilityAnimation,
 }
 
 struct CompoundAbilityAnimation {
@@ -453,6 +475,7 @@ struct CompoundAbilityAnimation {
     looping_animation_key: string,
     /// 动画层
     layer: AnimationLayer,
+    /// 动画过渡时间
     /// (默认：0)
     transition_length?: int @ 1..,
     /// 锁定脖子
