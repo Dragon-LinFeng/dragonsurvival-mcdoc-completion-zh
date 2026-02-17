@@ -4,6 +4,19 @@
 - [蓝奏云](https://wwq.lanzouo.com/b014wp9spg) 密码:5bzn
 
 ---
+
+## v2.0.4 - 2025-12-17
+> 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上
+
+- 更改了部分注释，让它们更符合自己的作用
+
+- 数据包部分
+   - 添加食物列表中漏掉的 `retain_effects` 参数
+   - 通过确认源代码纠正大部分概率参数错误的默认值提示
+   - 将 `dragon_ability` 中 技能等级贴图的数量设为必须大于1，以同步游戏的警告
+   - 将 `dragon_ability` 中`Sound`与`Animations`的looping键进行拆分，looping键只在passive与channeled类的技能中可用
+   - 修复 `projectile_data` 中 `general_data.entity_hit_condition` 值的错误，他应该接受 LootCondition 或 [LootCondition] 不接受空元素 {}
+
 ## v2.0.3 - 2025-12-17
 
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上  
