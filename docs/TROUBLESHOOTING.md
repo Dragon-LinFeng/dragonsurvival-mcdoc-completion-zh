@@ -15,15 +15,18 @@
 
 如果上述操作不存在或无效：
 
-- 检查 `Spyglass` 插件是否正确安装
+- 检查 `Spyglass` 插件是否正确安装（标识符spgoding.datapack-language-server）
 - 确认 `spyglass.json` 文件配置正确
 - 验证文件路径是否为纯英文，有时候存在中文的路径会无法工作
 - 验证文件路径是否存在空格，有时候存在空格的路径会无法工作
 
-### 第三步：深度排查
+### 第三步：尝试降级
 
-- 检查VSCode控制台是否有错误信息
-- 确认龙之生存Mod版本兼容性
+- 在vscode插件界面搜索spyglass（或搜索标识符spgoding.datapack-language-server）
+- 取消勾选插件的 自动更新 选项
+- 卸载spyglass后重启vscode
+- 再次搜索spyglass插件，并点击安装按钮边上的小箭头选择安装指定版本
+- 于2026年春节期间测试已知 4.6.1 版本的spyglass可正常工作
 
 ---
 
