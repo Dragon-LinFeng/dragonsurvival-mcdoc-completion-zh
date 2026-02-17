@@ -5,7 +5,7 @@
 
 ---
 
-## v2.0.4 - 2025-12-17
+## v2.0.4 - 2026-02-17
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上
 
 - 更改了部分注释，让它们更符合自己的作用
