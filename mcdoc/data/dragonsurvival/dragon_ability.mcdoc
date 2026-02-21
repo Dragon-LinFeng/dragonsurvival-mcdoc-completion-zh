@@ -427,7 +427,7 @@ struct Sound {
     start?: #[id="sound_event"] string,
     /// 蓄力开始时的音效
     charging?: #[id="sound_event"] string,
-    ...dragonsurvival:animatioin[[%parent.activation_type]],
+    ...dragonsurvival:sound[[%parent.activation_type]],
     /// 施法结束时的音效
     end?: #[id="sound_event"] string,
 }
