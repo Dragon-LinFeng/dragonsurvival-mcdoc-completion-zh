@@ -1,46 +1,46 @@
-use ::java::data::advancement::trigger::Conditions
-use ::java::data::advancement::trigger::TriggerBase
+use ::java::data::advancement::trigger::AllOptional
+use ::java::data::advancement::trigger::PlayerConditions
 use ::java::world::item::ItemStack
 
-dispatch minecraft:trigger[dragonsurvival:be_dragon] to Conditions<struct BeDragon {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:be_dragon] to AllOptional<struct BeDragon {
+    ...PlayerConditions,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:convert_item_from_ability] to Conditions<struct ConvertItemFromAbility {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:convert_item_from_ability] to AllOptional<struct ConvertItemFromAbility{
+    ...PlayerConditions,
     /// 检查从什么物品进行转换
     item_from: ItemStack,
     /// 检查转换成的物品
     item_to: ItemStack,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:mine_block_under_lava] to Conditions<struct MineBlockUnderLava {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:mine_block_under_lava] to AllOptional<struct MineBlockUnderLava {
+    ...PlayerConditions,
     block?: #[id="block"] string,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:sleep_on_treasure] to Conditions<struct SleepOnTreasure {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:sleep_on_treasure] to AllOptional<struct SleepOnTreasure {
+    ...PlayerConditions,
     /// 睡在指定片数以上的财宝堆中才能触发
     nearby_treasure_amount?: int,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:steal_from_villager] to Conditions<struct StealFromVillager {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:steal_from_villager] to AllOptional<struct StealFromVillager {
+    ...PlayerConditions,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:stop_natural_growth] to Conditions<struct StopNaturalGrowth {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:stop_natural_growth] to AllOptional<struct StopNaturalGrowth {
+    ...PlayerConditions,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:upgrade_ability] to Conditions<struct UpgradeAbility {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:upgrade_ability] to AllOptional<struct UpgradeAbility {
+    ...PlayerConditions,
     /// 想要检查的龙能力ID
     ability?: #[id="dragonsurvival:dragon_ability"] string,
     /// 等级等于多少时触发
     level?: int,
 }>
 
-dispatch minecraft:trigger[dragonsurvival:use_dragon_soul] to Conditions<struct UseDragonSoul {
-    ...TriggerBase,
+dispatch minecraft:trigger[dragonsurvival:use_dragon_soul] to AllOptional<struct UseDragonSoul {
+    ...PlayerConditions,
 }>
