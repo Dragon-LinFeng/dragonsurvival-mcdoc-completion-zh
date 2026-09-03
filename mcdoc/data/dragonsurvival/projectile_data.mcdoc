@@ -1,15 +1,9 @@
+use ::java::data::enchantment::LevelBasedValue
 use ::java::data::enchantment::effect::SpawnParticlesEntityEffect
 use ::java::data::loot::LootCondition
 use ::java::util::particle::Particle
+use ::java::util::direction::Direction
 
-// ---------------------------------------------------------------------------------------------------------------------
-struct LevelBasedValueMap {
-    /// 等级依赖函数(https://zh.minecraft.wiki/w/魔咒数据格式/等级依赖函数)
-	type: #[id="enchantment_level_based_value_type"] string,
-	...minecraft:level_based_value[[type]],
-}
-
-type LevelBasedValue = (float | LevelBasedValueMap)
 
 // ---------------------------------------------------------------------------------------------------------------------
 dispatch minecraft:resource[dragonsurvival:projectile_data] to struct ProjectileData {
@@ -22,7 +16,7 @@ dispatch minecraft:resource[dragonsurvival:projectile_data] to struct Projectile
     /// 决定自定义弹射物的外观
     /// - 若是`texture`+`piercing_level`则是自定义箭类实体
     /// - 若是`resources`+`behaviour_data`则是自定义火球类实体
-    type_data?: (
+    type_data: (
         GenericArrowData |
         GenericBallData |
     ),
@@ -354,41 +348,19 @@ dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:run_function] to
 
 dispatch dragonsurvival:projectile_entity_effect[dragonsurvival:push] to struct ProjectileEntityPushEffect {
     /// 决定施加推力的方向
-    target_direction: TargetDirection,
+    target_direction: struct {
+        direction: (
+            CustomDirection |
+            Direction
+        )
+    },
     /// 控制施加推力的大小(可为负数)
     push_force: LevelBasedValue,
 }
 
-struct TargetDirection {
-    /// 朝向
-    /// - `looking_at` 视线方向
-    /// - `towards_entity` 朝向实体方向
-    /// - `up` 上
-    /// - `down` 下
-    /// - `east` 东
-    /// - `west` 西
-    /// - `south` 南
-    /// - `north` 北
-    direction: DirectionType
-}
-
-enum(string) DirectionType {
-    /// 视线方向
-    LookingAt       = "looking_at",
-    /// 朝向实体方向
-    TowardsEntity   = "towards_entity",
-    /// 上
-    Up              = "up",
-    /// 下
-    Down            = "down",
-    /// 东
-    East            = "east",
-    /// 西
-    West            = "west",
-    /// 南
-    South           = "south",
-    /// 北
-    North           = "north",
+enum(string) CustomDirection {
+    Towards_Entity = "towards_entity",
+    Looking_At = "looking_at"
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

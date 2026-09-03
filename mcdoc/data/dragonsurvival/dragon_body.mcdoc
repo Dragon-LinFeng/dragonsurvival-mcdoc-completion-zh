@@ -1,3 +1,4 @@
+use ::java::data::enchantment::LevelBasedValue
 use ::java::util::attribute::AttributeOperation
 use ::java::data::loot::LootCondition
 use ::java::data::util::SoundEventRef
@@ -43,14 +44,6 @@ enum(string) Visibility {
     Always_Hidden       = "always_hidden",
     Visible_If_Locked   = "visible_if_locked"
 }
-
-struct LevelBasedValueMap {
-    /// 等级依赖函数(https://zh.minecraft.wiki/w/魔咒数据格式/等级依赖函数)
-	type: #[id="enchantment_level_based_value_type"] string,
-	...minecraft:level_based_value[[type]],
-}
-
-type LevelBasedValue = (float | LevelBasedValueMap)
 
 // ---------------------------------------------------------------------------------------------------------------------
 

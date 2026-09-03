@@ -1,3 +1,4 @@
+use ::java::data::enchantment::LevelBasedValue
 use ::java::data::enchantment::effect::SpawnParticlesEntityEffect
 use ::java::data::loot::LootCondition
 use ::java::data::advancement::predicate::ItemPredicate
@@ -11,6 +12,7 @@ use ::java::data::util::SoundEventRef
 use ::java::data::advancement::predicate::EntityPredicate
 use ::java::util::attribute::AttributeOperation
 use ::java::world::entity::EntityBase
+use ::java::util::direction::Direction
 
 // ---------------------------------------------------------------------------------------------------------------------
 // 待修复 :: 对于模组化的 mcdoc 文件已损坏
@@ -34,14 +36,6 @@ struct PreciseLevelBasedValue {
     /// 每级增量值
     precise_amount: float,
 }
-
-struct LevelBasedValueMap {
-    /// 等级依赖函数(https://zh.minecraft.wiki/w/魔咒数据格式/等级依赖函数)
-	type: #[id="enchantment_level_based_value_type"] string,
-	...minecraft:level_based_value[[type]],
-}
-
-type LevelBasedValue = (float | LevelBasedValueMap)
 
 // ---------------------------------------------------------------------------------------------------------------------
 // FIXME :: 规范路径的填写保证输入正确
@@ -850,6 +844,8 @@ enum(string) TargetingMode {
     Enemies         = "enemies",
     /// 选中物品
     Items           = "items",
+    /// 排除经验球
+    experience_orbs = "experience_orbs",
     /// 选中除施法者之外的任何目标
     AllExceptSelf   = "all_except_self",
 }
@@ -946,26 +942,17 @@ struct TargetDirection {
     /// - `west` 西
     /// - `south` 南
     /// - `north` 北
-    direction: DirectionType,
+    direction: (
+        CustomDirection |
+        Direction
+    ),
 }
 
-enum(string) DirectionType {
-    /// 视线方向
-    LookingAt       = "looking_at",
+enum(string) CustomDirection {
     /// 朝向实体方向
-    TowardsEntity   = "towards_entity",
-    /// 上
-    Up              = "up",
-    /// 下
-    Down            = "down",
-    /// 东
-    East            = "east",
-    /// 西
-    West            = "west",
-    /// 南
-    South           = "south",
-    /// 北
-    North           = "north",
+    Towards_Entity = "towards_entity",
+    /// 视线方向
+    Looking_At = "looking_at"
 }
 
 // ----- # ----- //

@@ -1,3 +1,4 @@
+use ::java::data::enchantment::LevelBasedValue
 use ::java::data::loot::LootCondition
 use ::java::data::advancement::predicate::ItemPredicate
 use ::java::util::particle::Particle
@@ -62,14 +63,6 @@ struct DamageModification {
     /// 值'0'表示目标将对此伤害免疫
     multiplier: LevelBasedValue,
 }
-
-struct LevelBasedValueMap {
-    /// 等级依赖函数(https://zh.minecraft.wiki/w/魔咒数据格式/等级依赖函数)
-    type: #[id="enchantment_level_based_value_type"] string,
-    ...minecraft:level_based_value[[type]],
-}
-
-type LevelBasedValue = (float | LevelBasedValueMap)
 
 // ---------------------------------------------------------------------------------------------------------------------
 // FIXME :: 规范路径的填写保证输入正确
