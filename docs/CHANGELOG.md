@@ -5,9 +5,9 @@
 
 ---
 
-## v2.0.5 - 2026-10-04
+## v2.1.0 - 2026-10-04
 
-> 该版本适用于 [DragonSurvival-1.21.1-v2.0.71](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files) 版本及以上
+> 该版本适用于 [DragonSurvival-1.21.1-v2.0.71](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/8973485) 版本及以上
 
 ### **新增功能**:
 
@@ -20,6 +20,14 @@
       - `dragonsurvival:swim` 新增参数 `has_stable_swim`稳定游泳
       - `dragonsurvival:conversion` 的 `blocks_to` 新增参数 `particles`方块被转换时生成的粒子
       - 实体/方块选择器 `applied_effects` 新增参数 `is_harmful`，启用后会额外检查施法者是否可以攻击玩家目标
+   - 对于 `dragon_body` 新增接口支持
+      - 支持不使用自定义龙模型的简化写法（此时只能填写 `is_default`、`unlockable_behavior`、`modifiers`、`default_icon`）
+      - 新增参数 `rideable`决定此身体是否可以骑乘(默认 true)
+      - `scaling_proportions` 新增参数 `ceiling_climbing_offset_multiplier`攀爬天花板时的位置偏移倍率
+   - 对于 `dragon_species` 新增接口支持
+      - `misc_resources` 新增参数 `custom_growth_info`自定义成长信息，用于替换界面中默认的成长提示文本
+   - 对于 `dragon_penalty` 新增接口支持
+      - `dragonsurvival:item_blacklist` 新增参数 `predicate`物品谓词
    - 对于 `dragonsurvival:damage_modification` 的 `damage_types` 变为可选项，省略时匹配所有伤害类型
 
 ### **错误修复**:
@@ -39,6 +47,15 @@
    - `dragon_ability` 修正了 `dragonsurvival:item_conversion` 中 `items_to.conversion_rate` 的类型，应为小数而非整数
    - `dragon_ability` 修正了 `transition_length` 的取值范围，游戏允许为 0
    - 通过确认源代码纠正 `dragon_ability` 中 `harvest_bonus`、`item_conversion`、`use_item`、`dragon_growth` 等参数错误的默认值提示
+   - `dragon_body` 移除了游戏中已不存在的 `mounting_offset` 参数，骑乘位置现在由模型骨骼 `MountingBone` 决定
+   - `dragon_body` 修正了 `modifiers` 被错误设为可选的问题
+   - `dragon_body` 修正了 `crouch_height_ratio` 的取值范围，游戏允许 0~100 而非 0~1
+   - `dragon_stage` 修正了 `ticks_until_grown` 的最短值，游戏允许最短为 1 刻而非 20 刻
+   - `dragon_stage` 修正了 `maximum_usages` 的取值范围，游戏允许使用 -1 表示无限次
+   - `dragon_penalty` 补上了遗漏的缺陷效果 `dragonsurvival:informational`
+   - `dragon_penalty` 修正了 `dragonsurvival:item_blacklist` 的 `items` 被错误设为必填的问题
+   - `dragon_penalty` 修正了 `dragonsurvival:effect_modification` 的 `effects` 被错误设为可选的问题
+   - `dragon_penalty` 修正了 `dragonsurvival:damage_modification` 的 `damage_types` 被错误设为必填的问题
 
 ## v2.0.4 - 2026-02-17
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上
