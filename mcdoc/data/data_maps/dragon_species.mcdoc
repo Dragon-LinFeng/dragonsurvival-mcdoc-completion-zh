@@ -12,6 +12,13 @@ dispatch minecraft:resource[dragonsurvival:data_map_dragon_species] to struct Da
 	values: struct SpeciesID {
 		[#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string]: (DragonBeaconData | StageResourcesID | EndPlatform | [DietEntry]),
 	},
+	/// 移除指定键的数据
+	/// - 仅 `diet_entries` 与 `stage_resources` 支持该字段
+	///   - `diet_entries`: 值为物品ID或正则表达式
+	///   - `stage_resources`: 值为成长阶段ID
+	remove?: struct {
+		[#[id(registry="dragonsurvival:dragon_species", tags="allowed")] string]: [string],
+	},
 }
 
 struct StageResourcesID {
@@ -54,7 +61,6 @@ type DataMap<K, V> = struct {
 			} |
 		),
 	},
-	remove?: [K],
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -91,8 +97,22 @@ struct DietEntry {
 	/// 定义具体的食物效果
 	properties?: Food,
 	/// 是否继承物品原本拥有的状态效果
-	/// (默认:：false)
-	retain_effects?: boolean
+	/// - 也可以写为结构，分别决定有益/中立/有害效果是否保留
+	/// (默认：false)
+	retain_effects?: (
+		boolean |
+		struct RetainEffects {
+			/// 是否保留有益效果
+			/// (默认：false)
+			beneficial?: boolean,
+			/// 是否保留中立效果
+			/// (默认：false)
+			neutral?: boolean,
+			/// 是否保留有害效果
+			/// (默认：false)
+			harmful?: boolean,
+		} |
+	)
 }
 
 // ----- # ----- //
@@ -169,8 +189,8 @@ struct PaymentData {
 
 struct Effect {
 	effect: #[id="mob_effect"] string,
-	/// 默认值：无限持续时间
-	duration?: int @ 1..,
+	/// 默认值：-1(无限持续时间)
+	duration?: int @ -1..,
 	/// 默认值：0
 	amplifier?: int @ 0..,
 }

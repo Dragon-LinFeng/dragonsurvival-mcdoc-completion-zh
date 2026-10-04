@@ -1,6 +1,5 @@
 use ::java::data::advancement::trigger::AllOptional
 use ::java::data::advancement::trigger::PlayerConditions
-use ::java::world::item::ItemStack
 
 dispatch minecraft:trigger[dragonsurvival:be_dragon] to AllOptional<struct BeDragon {
     ...PlayerConditions,
@@ -9,14 +8,18 @@ dispatch minecraft:trigger[dragonsurvival:be_dragon] to AllOptional<struct BeDra
 dispatch minecraft:trigger[dragonsurvival:convert_item_from_ability] to AllOptional<struct ConvertItemFromAbility{
     ...PlayerConditions,
     /// 检查从什么物品进行转换
-    item_from: ItemStack,
+    item_from: #[id="item"] string,
     /// 检查转换成的物品
-    item_to: ItemStack,
+    item_to: #[id="item"] string,
 }>
 
 dispatch minecraft:trigger[dragonsurvival:mine_block_under_lava] to AllOptional<struct MineBlockUnderLava {
     ...PlayerConditions,
-    block?: #[id="block"] string,
+    /// 检查挖掘的方块
+    block?: (
+        #[id(registry="block", tags="allowed")] string |
+        [#[id="block"] string] |
+    ),
 }>
 
 dispatch minecraft:trigger[dragonsurvival:sleep_on_treasure] to AllOptional<struct SleepOnTreasure {

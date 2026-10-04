@@ -28,6 +28,8 @@
       - `misc_resources` 新增参数 `custom_growth_info`自定义成长信息，用于替换界面中默认的成长提示文本
    - 对于 `dragon_penalty` 新增接口支持
       - `dragonsurvival:item_blacklist` 新增参数 `predicate`物品谓词
+   - 对于 `data_maps/dragonsurvival/dragon_species` 新增接口支持
+      - `diet_entries` 的 `retain_effects`支持写为结构，分别控制有益/中立/有害效果是否保留
    - 对于 `dragonsurvival:damage_modification` 的 `damage_types` 变为可选项，省略时匹配所有伤害类型
 
 ### **错误修复**:
@@ -56,6 +58,21 @@
    - `dragon_penalty` 修正了 `dragonsurvival:item_blacklist` 的 `items` 被错误设为必填的问题
    - `dragon_penalty` 修正了 `dragonsurvival:effect_modification` 的 `effects` 被错误设为可选的问题
    - `dragon_penalty` 修正了 `dragonsurvival:damage_modification` 的 `damage_types` 被错误设为必填的问题
+   - `data_maps/dragonsurvival/dragon_species` 补上了遗漏的 `remove`，用于移除指定物种的数据（仅 `diet_entries` 与 `stage_resources` 支持）
+   - `data_maps/dragonsurvival/dragon_species` 修正了 `remove` 的错误写法，它应是「物种ID → 移除器值」的映射而非键列表
+   - `data_maps/dragonsurvival/dragon_species` 修正了 `dragon_beacon_data` 中 `duration` 的取值范围，游戏允许使用 -1 表示无限持续时间
+   - `projectile_data` 补上了遗漏的目标类型 `dragonsurvival:point`
+   - `projectile_data` 修正了 `entity_hit_condition` 被错误设为必填的问题
+   - `projectile_data` 修正了 `condition` 缺少数组写法的问题
+   - `projectile_data` 修正了 `area_cloud` 的 `probability` 类型，应为 LevelBasedValue 而非 0~1 的固定小数
+   - `projectile_data` 修正了 `from_level` 的取值范围为 0~255
+   - 通过确认源代码纠正 `projectile_data` 中 `tick_rate` 错误的默认值提示
+   - 自定义粒子 `dragonsurvival:treasure` 移除了颜色分量上游戏并不存在的范围限制
+   - 自定义粒子 `dragonsurvival:sea_sweep` 修正了 `quadSize` 的类型
+   - `predicate` 修正了 `ability_levels` 中 `ability` 被错误设为可选的问题
+   - `predicate` 修正了 `experience_orb` 与 `has_duration_effect` 的说明文字
+   - `trigger` 修正了 `convert_item_from_ability` 中 `item_from`与`item_to`的类型，应为物品ID而非物品堆
+   - `trigger` 修正了 `mine_block_under_lava` 的 `block`缺少标签与数组写法的问题
 
 ## v2.0.4 - 2026-02-17
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上

@@ -7,13 +7,16 @@ dispatch minecraft:particle["dragonsurvival:fire","dragonsurvival:large_fire","d
     }
 
 dispatch minecraft:particle["dragonsurvival:treasure"] to struct DragonSurvival_ColorParticle {
-    red: float @ 0..1,
-    green: float @ 0..1,
-    blue: float @ 0..1,
+    /// 红色分量(0~1 为正常范围，游戏不做校验)
+    red: float,
+    /// 绿色分量(0~1 为正常范围，游戏不做校验)
+    green: float,
+    /// 蓝色分量(0~1 为正常范围，游戏不做校验)
+    blue: float,
     /// 粒子缩放
     scale: float @ 0.01..4.0,
 }
 
 dispatch minecraft:particle["dragonsurvival:sea_sweep"] to struct DragonSurvival_SeaSweepParticle {
-    quadSize: float,
+    quadSize: double,
 }
