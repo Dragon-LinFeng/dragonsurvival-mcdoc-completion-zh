@@ -11,6 +11,10 @@
 
 # other
 /other
+/plan
+/.mnemon
+/package
+/resources
 
 # ico
 /*.ico

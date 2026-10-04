@@ -5,6 +5,41 @@
 
 ---
 
+## v2.0.5 - 2026-10-04
+
+> 该版本适用于 [DragonSurvival-1.21.1-v2.0.71](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files) 版本及以上
+
+### **新增功能**:
+
+- 数据包部分
+   - 对于 `dragon_ability` 新增接口支持
+      - `dragonsurvival:climbable` 让龙可以攀爬指定的方块
+         - 新结构 `Climbable`，含 `blocks`可攀爬方块谓词 、 `can_stick_to_walls`能否吸附在墙上 、 `can_climb_ceilings`能否攀爬天花板
+         - 配套新增 `LevelBasedBlockPredicate`与`LevelBasedBoolean`，用于按技能等级逐级取值
+      - `dragonsurvival:projectile` 新增参数 `projectile_type`，可以直接用实体类型作为投射物；此时 `projectile_data` 变为可选项（两者至少填写一个）
+      - `dragonsurvival:swim` 新增参数 `has_stable_swim`稳定游泳
+      - `dragonsurvival:conversion` 的 `blocks_to` 新增参数 `particles`方块被转换时生成的粒子
+      - 实体/方块选择器 `applied_effects` 新增参数 `is_harmful`，启用后会额外检查施法者是否可以攻击玩家目标
+   - 对于 `dragonsurvival:damage_modification` 的 `damage_types` 变为可选项，省略时匹配所有伤害类型
+
+### **错误修复**:
+
+- 数据包部分
+   - `dragon_ability` 修正了被错误设为必填的可选参数
+      - `dragonsurvival:hunger` 的 `hunger_gain`/`saturation_gain`/`maximum_saturation`/`conversion_rate` 四个参数
+      - `dragonsurvival:swim` 的 `max_oxygen`氧气上限
+      - `dragonsurvival:summon_entity` 的 `nbt`（实体效果与方块效果各一处）
+      - `dragonsurvival:harvest_bonus` 的 `blocks`可作用方块
+      - 顶层 `actions`、`dragonsurvival:disc` 的 `height`、`upgrade` 中 `conditions` 的 `require_previous`、`dragonsurvival:on_block_break` 的 `condition`
+   - `dragon_ability` 修正了被错误设为可选的必填参数
+      - `dragonsurvival:effect_modification` 的 `effects`
+      - `dragonsurvival:block_vision` 的 `blocks`将被标记的方块
+   - `dragon_ability` 修正了 `dragonsurvival:block_vision` 的 `colors` 允许颜色字符串与颜色对象混用的问题，游戏实际要求整个列表必须是同一种写法
+   - `dragon_ability` 修正了 `dragonsurvival:block_break` 的 `valid_blocks` 使用了重复定义的方块谓词，部分写法会被误报的问题
+   - `dragon_ability` 修正了 `dragonsurvival:item_conversion` 中 `items_to.conversion_rate` 的类型，应为小数而非整数
+   - `dragon_ability` 修正了 `transition_length` 的取值范围，游戏允许为 0
+   - 通过确认源代码纠正 `dragon_ability` 中 `harvest_bonus`、`item_conversion`、`use_item`、`dragon_growth` 等参数错误的默认值提示
+
 ## v2.0.4 - 2026-02-17
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上
 
