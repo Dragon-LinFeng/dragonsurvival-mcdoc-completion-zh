@@ -73,6 +73,11 @@
    - `predicate` 修正了 `experience_orb` 与 `has_duration_effect` 的说明文字
    - `trigger` 修正了 `convert_item_from_ability` 中 `item_from`与`item_to`的类型，应为物品ID而非物品堆
    - `trigger` 修正了 `mine_block_under_lava` 的 `block`缺少标签与数组写法的问题
+   - 命令补全：补上了遗漏的命令 `dragon-body`与`dragon-riding-debug`
+   - 命令补全：补上了 `dragon-ability refresh` 遗漏的 `clear_storages`参数与自身的可执行状态
+   - 命令补全：`dragon` 的末级参数名应为 `targets`而非`target`
+   - 命令补全：`dragon-growth` 的末级参数名应为 `dragon_growth`且类型为小数，并移除了写死的取值范围
+   - 注册表ID补全：补上了 `entity_type` 中缺失的 8 个实体ID
 
 ## v2.0.4 - 2026-02-17
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上

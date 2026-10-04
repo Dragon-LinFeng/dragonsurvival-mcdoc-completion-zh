@@ -110,6 +110,11 @@
                 "refresh": {
                     "type": "literal",
                     "children": {
+                        "clear_storages": {
+                            "type": "argument",
+                            "parser": "brigadier:bool",
+                            "executable": true
+                        },
                         "targets": {
                             "type": "argument",
                             "parser": "minecraft:entity",
@@ -117,9 +122,17 @@
                                 "amount": "multiple",
                                 "type": "players"
                             },
+                            "children": {
+                                "clear_storages": {
+                                    "type": "argument",
+                                    "parser": "brigadier:bool",
+                                    "executable": true
+                                }
+                            },
                             "executable": true
                         }
-                    }
+                    },
+                    "executable": true
                 }
             }
         },
@@ -195,7 +208,7 @@
                                         "registry": "dragonsurvival:dragon_stage"
                                     },
                                     "children": {
-                                        "target": {
+                                        "targets": {
                                             "type": "argument",
                                             "parser": "minecraft:entity",
                                             "properties": {
@@ -227,16 +240,78 @@
                         "type": "players"
                     },
                     "children": {
-                        "amount": {
+                        "dragon_growth": {
                             "type": "argument",
-                            "parser": "brigadier:integer",
+                            "parser": "brigadier:double",
+                            "executable": true
+                        }
+                    }
+                }
+            }
+        },
+        "dragon-body": {
+            "type": "literal",
+            "children": {
+                "targets": {
+                    "type": "argument",
+                    "parser": "minecraft:entity",
+                    "properties": {
+                        "amount": "multiple",
+                        "type": "players"
+                    },
+                    "children": {
+                        "dragon_body": {
+                            "type": "argument",
+                            "parser": "minecraft:resource",
                             "properties": {
-                                "min": 10,
-                                "max": 300
+                                "registry": "dragonsurvival:dragon_body"
                             },
                             "executable": true
                         }
                     }
+                }
+            }
+        },
+        "dragon-riding-debug": {
+            "type": "literal",
+            "children": {
+                "start": {
+                    "type": "literal",
+                    "children": {
+                        "dragon_species": {
+                            "type": "argument",
+                            "parser": "minecraft:resource",
+                            "properties": {
+                                "registry": "dragonsurvival:dragon_species"
+                            },
+                            "children": {
+                                "dragon_body": {
+                                    "type": "argument",
+                                    "parser": "minecraft:resource",
+                                    "properties": {
+                                        "registry": "dragonsurvival:dragon_body"
+                                    },
+                                    "children": {
+                                        "dragon_stage": {
+                                            "type": "argument",
+                                            "parser": "minecraft:resource",
+                                            "properties": {
+                                                "registry": "dragonsurvival:dragon_stage"
+                                            },
+                                            "executable": true
+                                        }
+                                    },
+                                    "executable": true
+                                }
+                            },
+                            "executable": true
+                        }
+                    },
+                    "executable": true
+                },
+                "stop": {
+                    "type": "literal",
+                    "executable": true
                 }
             }
         }
