@@ -930,10 +930,11 @@ struct PotionData {
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:projectile] to struct ProjectileEffect_Entity {
     /// 该技能所自定义的弹射物数据
     /// - 可引用自 `data/dragonsurvival/projectile_data` 在外部编写，例如 `"dragonsurvival:ball_lightning"`
-    /// - 与 `projectile_type` 二选一，两者至少要填写一个
+    /// - 与 `projectile_type` 可同时填写，但两者至少要填写一个
     projectile_data?: #[id(registry="dragonsurvival:projectile_data")] string,
     /// 直接使用某个实体作为弹射物
-    /// - 与 `projectile_data` 二选一，两者至少要填写一个
+    /// - 与 `projectile_data` 可同时填写，但两者至少要填写一个
+    /// 理论上可填写所有已注册实体，但一般仅有为弹射物实体形式的可顺利射出
     projectile_type?: #[id="entity_type"] string,
     /// 发射方向
     target_direction: TargetDirection,

@@ -46,7 +46,6 @@
     ],
     "entity_type": [
         "dragonsurvival:bolas",
-        "dragonsurvival:dummy_dragon",
         "dragonsurvival:generic_arrow_entity",
         "dragonsurvival:generic_ball_entity",
         "dragonsurvival:hunter_ambusher",
