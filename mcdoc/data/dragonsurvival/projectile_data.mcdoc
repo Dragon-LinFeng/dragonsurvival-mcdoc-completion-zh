@@ -58,7 +58,7 @@ struct GeneralData {
     /// 击中实体的谓词判断(用于`entity_hit_effects`)
     /// 具有施法者和目标之间的上下文，允许进行适当的盟友或敌人检查
     /// 谓词(https://zh.minecraft.wiki/w/谓词)
-    entity_hit_condition: (LootCondition | [LootCondition]),
+    entity_hit_condition?: (LootCondition | [LootCondition]),
     /// 击中实体时执行的效果
     /// - 执行者：被击中的实体
     /// - 执行位置：被击中的实体
@@ -112,11 +112,17 @@ dispatch dragonsurvival:projectile_targeting[dragonsurvival:area] to struct Area
     particle_trail?: Particle,
 }
 
+// ----- # ----- //
+dispatch dragonsurvival:projectile_targeting[dragonsurvival:point] to struct PointTarget {
+    // 该类型没有额外的参数，效果与执行位置的说明见上方 `common_hit_effects` 与 `ticking_effects`
+}
+
 struct ProjectileTargeting_GeneralData {
     /// 定义将执行的效果列表
     effects: [ProjectileTargeting_GeneralData_Effect],
     /// 效果触发的频率(current_tick % rate == 0)
-    /// (默认: 0)
+    /// - 设为 `0` 时每个tick都会触发，并忽略下方的触发概率
+    /// (默认: 1)
     tick_rate?: int,
     /// 效果触发的概率
     /// (默认：1)
@@ -134,7 +140,7 @@ struct ProjectileTargeting_GeneralData_Effect {
         ProjectileWorldEffect |
     ),
     /// 谓词(https://zh.minecraft.wiki/w/谓词)
-    condition?: LootCondition,
+    condition?: (LootCondition | [LootCondition]),
 }
 
 // --- 世界效果 --- //
@@ -237,8 +243,8 @@ dispatch dragonsurvival:projectile_block_effect[dragonsurvival:area_cloud] to st
     /// 药水云的持续时间
     duration: LevelBasedValue,
     /// 药水云成功生成的概率
-    /// 0 (0%) 到 1 (100%)
-    probability: double @ 0..1,
+    /// - 计算值通常为 0 (0%) 到 1 (100%)
+    probability: LevelBasedValue,
     /// 药水云生效前的延迟时间
     delay?: LevelBasedValue,
     /// 药水云的作用半径
@@ -434,7 +440,7 @@ struct LevelBasedResource {
 struct ResourceLocation {
     /// 指定从哪个等级开始使用对应的贴图
     /// (该条目定义了一个阶梯函数，每个`from_level`决定了对应区间的起点)
-    from_level: int @ -1..,
+    from_level: int @ 0..255,
     /// 该等级弹射物将使用的贴图(必须放在'assets/<命名空间>/textures/entity/projectiles'目录中)
     /// (需要省略'textures/entity/projectiles'路径和'.png'文件扩展名)
     texture_resource: #[id(registry="texture",path="entity/projectiles/")] string,

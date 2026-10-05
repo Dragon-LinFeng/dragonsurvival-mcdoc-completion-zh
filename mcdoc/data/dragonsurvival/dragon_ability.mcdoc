@@ -60,7 +60,8 @@ dispatch minecraft:resource[dragonsurvival:dragon_ability] to struct DragonAbili
     /// 谓词(https://zh.minecraft.wiki/w/谓词)
     usage_blocked?: LootCondition,
     /// 定义能力实际效果
-    actions: [Action],
+    /// (默认：空列表)
+    actions?: [Action],
     /// 决定是否可以通过物种界面按CTRL+点击来禁用该能力
     /// (默认: true)
     can_be_manually_disabled?: boolean,
@@ -195,7 +196,7 @@ dispatch dragonsurvival:activation_trigger[dragonsurvival:on_block_break] to str
     /// - attacking_entity(可选)
     /// - direct_attacking_entity(可选)
     /// 谓词(https://zh.minecraft.wiki/w/谓词)
-    condition: LootCondition,
+    condition?: LootCondition,
 }
 
 dispatch dragonsurvival:activation_trigger[dragonsurvival:on_key_pressed] to struct OnKeyPressed { 
@@ -471,7 +472,7 @@ struct CompoundAbilityAnimation {
     layer: AnimationLayer,
     /// 动画过渡时间
     /// (默认：0)
-    transition_length?: int @ 1..,
+    transition_length?: int @ 0..,
     /// 锁定脖子
     locks_neck: boolean,
     /// 锁定尾巴
@@ -488,7 +489,7 @@ struct SimpleAbilityAnimation {
     /// - BITE
     layer: AnimationLayer,
     /// (默认：0)
-    transition_length?: int @ 1..,
+    transition_length?: int @ 0..,
     /// 锁定脖子
     locks_neck: boolean,
     /// 锁定尾巴
@@ -567,7 +568,8 @@ dispatch dragonsurvival:upgrade_type[dragonsurvival:condition_based] to struct C
     conditions: [LootCondition],
     /// 如果启用，只有在前置条件也匹配时才能解锁下一级升级
     /// 如果禁用，则最高匹配条件的等级决定当前等级
-    require_previous: boolean,
+    /// (默认：true)
+    require_previous?: boolean,
 }
 
 // --- 激活 --- //
@@ -695,7 +697,8 @@ dispatch dragonsurvival:ability_targeting[dragonsurvival:disc] to struct DiscTar
     /// 用于实体选择的 圆柱体范围半径
     radius: LevelBasedValue,
     /// 用于实体选择的 圆柱体范围高度
-    height: LevelBasedValue,
+    /// (默认：1)
+    height?: LevelBasedValue,
     /// 如果启用，圆盘的起始高度将下移1格(默认：false)
     /// (适用于以施法者所站地面为目标的情况)
     height_starts_below?: boolean,
@@ -723,6 +726,10 @@ struct EntityTargeting {
     /// - `items` 选中物品
     /// - `all_except_self` 选中除施法者之外的任何目标
     targeting_mode: TargetingMode,
+    /// 该效果是否被视为有害
+    /// 如果启用，将额外检查施法者是否可以攻击玩家目标
+    /// (默认：false)
+    is_harmful?: boolean,
 }
 
 dispatch minecraft:resource[dragonsurvival:ability_entity_effect] to struct EntityEffect {
@@ -758,6 +765,7 @@ dispatch minecraft:resource[dragonsurvival:ability_entity_effect] to struct Enti
     /// - `dragonsurvival:mana_recovery` 恢复魔法值
     /// - `dragonsurvival:experience` 调整玩家经验值
     /// - `dragonsurvival:cooldown_recovery` 能力/技能冷却时间恢复
+    /// - `dragonsurvival:climbable` 允许龙攀爬指定的方块
     effect_type: EntityEffectType,
     ...dragonsurvival:ability_entity_effect[[effect_type]],
 }
@@ -825,6 +833,8 @@ enum(string) EntityEffectType {
     Experience          = "dragonsurvival:experience",
     /// 能力/技能冷却时间恢复
     Cooldown_Recovery   = "dragonsurvival:cooldown_recovery",
+    /// 允许龙攀爬指定的方块
+    Climbable           = "dragonsurvival:climbable",
 }
 
 enum(string) TargetingMode {
@@ -920,8 +930,12 @@ struct PotionData {
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:projectile] to struct ProjectileEffect_Entity {
     /// 该技能所自定义的弹射物数据
     /// - 可引用自 `data/dragonsurvival/projectile_data` 在外部编写，例如 `"dragonsurvival:ball_lightning"`
-    /// - 或者直接在此填写(但是不建议，由于数据过多影响可读性，该mcdoc也未在此实现)
-    projectile_data: #[id(registry="dragonsurvival:projectile_data")] string,
+    /// - 与 `projectile_type` 可同时填写，但两者至少要填写一个
+    projectile_data?: #[id(registry="dragonsurvival:projectile_data")] string,
+    /// 直接使用某个实体作为弹射物
+    /// - 与 `projectile_data` 可同时填写，但两者至少要填写一个
+    /// 理论上可填写所有已注册实体，但一般仅有为弹射物实体形式的可顺利射出
+    projectile_type?: #[id="entity_type"] string,
     /// 发射方向
     target_direction: TargetDirection,
     /// 单次发射的弹射物数量
@@ -972,7 +986,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:summon_entity] to s
     /// 调整召唤实体的属性(https://zh.minecraft.wiki/w/属性)
     attribute_scales?: [AttributeScale],
     /// 调整召唤实体的nbt
-    nbt: SummonEntityEffect_NBT,
+    nbt?: SummonEntityEffect_NBT,
     /// 如果启用，实体将被召唤者拥有并被视为盟友(默认：true)
     /// (这也意味着可以通过相关按键绑定改变攻击和移动行为)
     is_allied?: boolean,
@@ -1004,7 +1018,8 @@ struct DamageModification {
     /// 控制修改效果的持续时间和其他基础设置
     base: DurationInstanceBase,
     /// 将调整的伤害类型(https://zh.minecraft.wiki/w/伤害类型定义格式)
-    damage_types: (
+    /// (如果省略，则将调整所有伤害类型 - 注意：空数组不等价于省略)
+    damage_types?: (
         #[id(registry="damage_type", tags="allowed")] string |
         [#[id="damage_type"] string] |
     ),
@@ -1049,7 +1064,8 @@ struct HarvestBonus {
     /// - 若此项填入 `#minecraft:mineable/shovel`  则显示 "工具类型: 铲"
     /// - 若此项填入 `#minecraft:mineable/pickaxe` 则显示 "工具类型: 镐"
     /// - 若不是上述项则显示为空
-    blocks: (
+    /// (如果省略，则适用于所有方块)
+    blocks?: (
         #[id(registry="block", tags="allowed")] string |
         [#[id="block"] string] |
     ),
@@ -1066,7 +1082,8 @@ struct HarvestBonus {
     ///   - 4 = 钻石制/下界合金制
     harvest_bonus?: LevelBasedValue,
     /// 附加挖掘速度
-    /// - 计算方式: 1 + break_speed_multiplier
+    /// - 该项直接作为挖掘速度的乘数(最终速度 = 原速度 * 该值)
+    /// (默认：0)
     break_speed_multiplier?: LevelBasedValue,
 }
 
@@ -1128,8 +1145,8 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:spin] to struct Spi
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:item_conversion] to struct ItemConversionEffect_Entity {
     /// 一个转换的列表
     item_conversions: [ItemConversionData],
+    /// 控制能力成功触发的几率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
     probability: LevelBasedValue,
 }
 
@@ -1144,7 +1161,9 @@ struct ItemTo {
     /// 需要转化成的物品id
     item: #[id="item"] string,
     /// 转换量
-    conversion_rate?: int @ 1..64,
+    /// - 转换后的数量 = 原数量 * 该值 (向下取整)
+    /// (默认：1.0)
+    conversion_rate?: double,
     /// 权重值
     weight: int @ 0..,
     /// 粒子
@@ -1156,9 +1175,29 @@ struct ItemTo {
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:swim] to struct SwimEffect_Entity {
     /// 实体在指定流体中可以憋气的时间(以刻为单位)
     /// (值'-1'表示无限氧气)
-    max_oxygen: LevelBasedValue,
+    /// (默认：0)
+    max_oxygen?: LevelBasedValue,
+    /// 是否启用稳定的游泳姿态
+    /// (默认：false)
+    has_stable_swim?: LevelBasedBoolean,
     /// 实体可以游泳的流体类型
     fluid_type: #[id="neoforge:fluid_type"] string,
+}
+
+struct LevelBasedBoolean {
+    /// 所有`entries`都不匹配时使用的值
+    /// (默认：false)
+    fallback?: boolean,
+    /// 依能力等级取值的阶梯函数
+    /// (该条目定义了一个阶梯函数，每个`from_level`决定了对应区间的起点)
+    entries: [LevelBasedBooleanEntry],
+}
+
+struct LevelBasedBooleanEntry {
+    /// 布尔值
+    value: boolean,
+    /// 指定从哪个等级开始使用对应的布尔值
+    from_level: int @ 0..255,
 }
 
 // ----- # ----- //
@@ -1172,7 +1211,7 @@ struct EffectModification {
     /// 控制修改效果的持续时间和其他基础设置
     base: DurationInstanceBase,
     /// 要修改的效果
-    effects?: (
+    effects: (
         #[id(registry="mob_effect", tags="allowed")] string |
         [#[id="mob_effect"] string] |
     ),
@@ -1251,9 +1290,8 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:block_vision] to st
 struct BlockVision {
     /// 控制加成的持续时间和其他基础设置
     base: DurationInstanceBase,
-    /// 氧气加成适用的流体类型
-    /// (如果未指定，加成将适用于所有流体)
-    blocks?: (
+    /// 将被标记的方块
+    blocks: (
         #[id(registry="block", tags="allowed")] string |
         [#[id="block"] string] |
     ),
@@ -1264,11 +1302,11 @@ struct BlockVision {
     /// - `simple_shader` 在方块表面简单的覆盖一层着色
     display_type: DisplayType,
     /// 要使用的颜色 - 如果指定了多个，将在它们之间循环
-    colors: [(
-        #[color="hex_rgb"] string |
-        #[color="named"] TextColor |
-        ColorEntry |
-    )],
+    /// - 注意：颜色字符串与颜色对象不能混用，整个列表必须是同一种写法
+    colors: (
+        [(#[color="hex_rgb"] string | #[color="named"] TextColor)] |
+        [ColorEntry] |
+    ),
     /// 粒子速率
     /// 默认: 10
     particle_rate?: int @ 1..,
@@ -1345,16 +1383,20 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:push] to struct Pus
 dispatch dragonsurvival:ability_entity_effect[dragonsurvival:hunger] to struct HungerEffect_Entity {
     /// 饥饿值增益(可用负值表示消耗)
     /// 直接增加或减少玩家的饥饿值(食物条)
-    hunger_gain: LevelBasedValue,
+    /// (默认：0)
+    hunger_gain?: LevelBasedValue,
     /// 饱和度增益
     /// 直接增加玩家的饱和度(隐藏的饱食度)
-    saturation_gain: LevelBasedValue,
+    /// (默认：0)
+    saturation_gain?: LevelBasedValue,
     /// 最大饱和度
     /// 设置通过此能力获得的饱和度上限
-    maximum_saturation: LevelBasedValue,
+    /// (如果省略，则没有上限)
+    maximum_saturation?: LevelBasedValue,
     /// 转换率
     /// 多余饥饿值转换为饱和度的比例
-    conversion_rate: LevelBasedValue,
+    /// (如果省略，则不会进行转换)
+    conversion_rate?: LevelBasedValue,
 }
 
 // ----- # ----- //
@@ -1392,7 +1434,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:use_item] to struct
     item: ItemStack,
     /// 控制能力成功触发的几率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
     /// 能力成功触发时播放的音效
     sound?: SoundEventRef,
@@ -1415,7 +1457,7 @@ dispatch dragonsurvival:ability_entity_effect[dragonsurvival:dragon_growth] to s
     amount: LevelBasedValue,
     /// 控制能力成功触发的几率
     /// 0 (0%) 到 1 (100%)
-    /// 默认 0
+    /// (默认：1)
     probability?: LevelBasedValue,
 }
 
@@ -1524,6 +1566,42 @@ struct DurationInstanceBase {
     is_hidden?: boolean,
 }
 
+// ----- # ----- //
+
+dispatch dragonsurvival:ability_entity_effect[dragonsurvival:climbable] to struct ClimbEffect_Entity {
+    /// 将要应用的攀爬实例列表
+    climbables: [Climbable],
+}
+
+struct Climbable {
+    /// 控制攀爬效果的持续时间和其他基础设置
+    base: DurationInstanceBase,
+    /// 允许攀爬的方块
+    blocks: LevelBasedBlockPredicate,
+    /// 是否可吸附在墙上
+    /// (默认：false)
+    can_stick_to_walls?: LevelBasedBoolean,
+    /// 是否可攀爬天花板
+    /// (默认：false)
+    can_climb_ceilings?: LevelBasedBoolean,
+}
+
+struct LevelBasedBlockPredicate {
+    /// 所有`entries`都不匹配时使用的方块谓词
+    /// (默认：始终为真)
+    fallback?: BlockPredicate,
+    /// 依能力等级取值的阶梯函数
+    /// (该条目定义了一个阶梯函数，每个`from_level`决定了对应区间的起点)
+    entries: [LevelBasedBlockPredicateEntry],
+}
+
+struct LevelBasedBlockPredicateEntry {
+    /// 方块谓词
+    value: BlockPredicate,
+    /// 指定从哪个等级开始使用对应的方块谓词
+    from_level: int @ 0..255,
+}
+
 // --- 能力方块效果 --- //
 
 struct BlockTargeting {
@@ -1586,8 +1664,7 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:bonemeal] to struct 
     attempts: LevelBasedValue,
     /// 这不是每次尝试，而是整个效果应用的概率
     /// 0 (0%) 到 1 (100%)
-    probability: LevelBasedValue
-,
+    probability: LevelBasedValue,
 }
 
 // ----- # ----- //
@@ -1612,6 +1689,15 @@ struct BlockTo {
     state: BlockState,
     /// 权重值
     weight: int @ 0..,
+    /// 该方块被转换时生成的粒子
+    particles?: ParticleData,
+}
+
+struct ParticleData {
+    /// 粒子数据
+    particle_data: SpawnParticlesEntityEffect, // 我们有一个自定义对象，但CODEC看起来相同
+    /// 粒子数量
+    particle_count: LevelBasedValue,
 }
 
 // ----- # ----- //
@@ -1631,7 +1717,7 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:summon_entity] to st
     /// 调整召唤实体的属性(https://zh.minecraft.wiki/w/属性)
     attribute_scales?: [AttributeScale],
     /// 调整召唤实体的nbt
-    nbt: SummonEntityEffect_NBT,
+    nbt?: SummonEntityEffect_NBT,
     /// 如果启用，实体将被召唤者拥有并被视为盟友(默认：true)
     /// (这也意味着可以通过相关按键绑定改变攻击和移动行为)
     is_allied?: boolean,
@@ -1655,8 +1741,10 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:area_cloud] to struc
     /// 0 (0%) 到 1 (100%)
     probability: LevelBasedValue,
     /// 药水云生效前的延迟时间
+    /// (默认：0)
     delay?: LevelBasedValue,
     /// 药水云的作用半径
+    /// (默认：1)
     radius?: LevelBasedValue,
     /// 粒子效果
     particle: Particle,
@@ -1666,20 +1754,13 @@ dispatch dragonsurvival:ability_block_effect[dragonsurvival:area_cloud] to struc
 
 dispatch dragonsurvival:ability_block_effect[dragonsurvival:block_break] to struct BlockBreakEffect_Block {
     /// 决定哪些方块将被破坏
-    valid_blocks: BlockPredicateSpecial,
+    valid_blocks: BlockPredicate,
     /// 破坏方块的概率
     /// 0 (0%) 到 1 (100%)
     probability: LevelBasedValue,
     /// 破坏方块时掉落战利品(如果有的话)
     /// (默认：false)
     drop_loot?: boolean,
-}
-
-// 待修复 :: 已在 ::java::data::worldgen::feature 中定义，但与普通方块谓词冲突
-struct BlockPredicateSpecial {
-    /// 方块谓词
-	type: #[id="block_predicate_type"] string,
-	...minecraft:block_predicate[[type]],
 }
 
 // ----- # ----- //

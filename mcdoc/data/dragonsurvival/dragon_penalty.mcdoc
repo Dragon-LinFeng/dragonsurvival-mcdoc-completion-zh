@@ -55,8 +55,9 @@ struct PotionData {
 
 struct DamageModification {
     base: DurationInstanceBase,
-    /// 伤害类型(https://zh.minecraft.wiki/w/伤害类型定义格式)
-    damage_types: (
+    /// 将调整的伤害类型(https://zh.minecraft.wiki/w/伤害类型定义格式)
+    /// (如果省略，则将调整所有伤害类型 - 注意：空数组不等价于省略)
+    damage_types?: (
         #[id(registry="damage_type", tags="allowed")] string |
         [#[id="damage_type"] string] |
     ),
@@ -137,10 +138,14 @@ dispatch dragonsurvival:penalty_effect[dragonsurvival:mob_effect] to struct MobE
 dispatch dragonsurvival:penalty_effect[dragonsurvival:item_blacklist] to struct ItemBlacklistPenalty {
     /// 有效的资源定位符(命名空间:路径)
     /// 命名空间和路径中允许使用正则表达式
-    items: [(
+    /// (默认：空列表)
+    items?: [(
         #[id="item"] string |
         #[regex_pattern] string |
     )],
+    /// 物品谓词(https://zh.minecraft.wiki/w/谓词)
+    /// - 匹配到列表中任意一项或匹配到此谓词的物品都会被列入黑名单
+    predicate?: ItemPredicate,
 }
 
 // ----- # ----- //
@@ -171,6 +176,10 @@ struct Fear {
     /// 当您太接近实体时使用此值
     sprint_speed?: LevelBasedValue,
 }
+
+// ----- # ----- //
+/// 信息(无实际效果，仅供测试)
+dispatch dragonsurvival:penalty_effect[dragonsurvival:informational] to struct InformationalPenalty {}
 
 // ----- # ----- //
 
@@ -216,7 +225,7 @@ struct EffectModification {
     /// 控制修改效果的持续时间和其他基础设置
     base: DurationInstanceBase,
     /// 要修改的效果
-    effects?: (
+    effects: (
         #[id(registry="mob_effect", tags="allowed")] string |
         [#[id="mob_effect"] string] |
     ),

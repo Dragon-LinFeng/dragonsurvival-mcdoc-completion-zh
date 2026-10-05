@@ -45,8 +45,15 @@
         "zombie.spawn_reinforcements"
     ],
     "entity_type": [
+        "dragonsurvival:bolas",
         "dragonsurvival:generic_arrow_entity",
         "dragonsurvival:generic_ball_entity",
+        "dragonsurvival:hunter_ambusher",
+        "dragonsurvival:hunter_griffin",
+        "dragonsurvival:hunter_hound",
+        "dragonsurvival:hunter_knight",
+        "dragonsurvival:hunter_leader",
+        "dragonsurvival:hunter_spearman",
         "allay",
         "area_effect_cloud",
         "armadillo",

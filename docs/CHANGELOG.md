@@ -5,6 +5,80 @@
 
 ---
 
+## v2.1.0 - 2026-10-04
+
+> 该版本适用于 [DragonSurvival-1.21.1-v2.0.71](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/8973485) 版本及以上
+
+### **新增功能**:
+
+- 数据包部分
+   - 对于 `dragon_ability` 新增接口支持
+      - `dragonsurvival:climbable` 让龙可以攀爬指定的方块
+         - 新结构 `Climbable`，含 `blocks`可攀爬方块谓词 、 `can_stick_to_walls`能否吸附在墙上 、 `can_climb_ceilings`能否攀爬天花板
+         - 配套新增 `LevelBasedBlockPredicate`与`LevelBasedBoolean`，用于按技能等级逐级取值
+      - `dragonsurvival:projectile` 新增参数 `projectile_type`，可以直接用实体类型作为投射物；此时 `projectile_data` 变为可选项（两者至少填写一个）
+      - `dragonsurvival:swim` 新增参数 `has_stable_swim`稳定游泳
+      - `dragonsurvival:conversion` 的 `blocks_to` 新增参数 `particles`方块被转换时生成的粒子
+      - 实体/方块选择器 `applied_effects` 新增参数 `is_harmful`，启用后会额外检查施法者是否可以攻击玩家目标
+   - 对于 `dragon_body` 新增接口支持
+      - 支持不使用自定义龙模型的简化写法（此时只能填写 `is_default`、`unlockable_behavior`、`modifiers`、`default_icon`）
+      - 新增参数 `rideable`决定此身体是否可以骑乘(默认 true)
+      - `scaling_proportions` 新增参数 `ceiling_climbing_offset_multiplier`攀爬天花板时的位置偏移倍率
+   - 对于 `dragon_species` 新增接口支持
+      - `misc_resources` 新增参数 `custom_growth_info`自定义成长信息，用于替换界面中默认的成长提示文本
+   - 对于 `dragon_penalty` 新增接口支持
+      - `dragonsurvival:item_blacklist` 新增参数 `predicate`物品谓词
+   - 对于 `data_maps/dragonsurvival/dragon_species` 新增接口支持
+      - `diet_entries` 的 `retain_effects`支持写为结构，分别控制有益/中立/有害效果是否保留
+   - 对于 `dragonsurvival:damage_modification` 的 `damage_types` 变为可选项，省略时匹配所有伤害类型
+
+### **错误修复**:
+
+- 数据包部分
+   - `dragon_ability` 修正了被错误设为必填的可选参数
+      - `dragonsurvival:hunger` 的 `hunger_gain`/`saturation_gain`/`maximum_saturation`/`conversion_rate` 四个参数
+      - `dragonsurvival:swim` 的 `max_oxygen`氧气上限
+      - `dragonsurvival:summon_entity` 的 `nbt`（实体效果与方块效果各一处）
+      - `dragonsurvival:harvest_bonus` 的 `blocks`可作用方块
+      - 顶层 `actions`、`dragonsurvival:disc` 的 `height`、`upgrade` 中 `conditions` 的 `require_previous`、`dragonsurvival:on_block_break` 的 `condition`
+   - `dragon_ability` 修正了被错误设为可选的必填参数
+      - `dragonsurvival:effect_modification` 的 `effects`
+      - `dragonsurvival:block_vision` 的 `blocks`将被标记的方块
+   - `dragon_ability` 修正了 `dragonsurvival:block_vision` 的 `colors` 允许颜色字符串与颜色对象混用的问题，游戏实际要求整个列表必须是同一种写法
+   - `dragon_ability` 修正了 `dragonsurvival:block_break` 的 `valid_blocks` 使用了重复定义的方块谓词，部分写法会被误报的问题
+   - `dragon_ability` 修正了 `dragonsurvival:item_conversion` 中 `items_to.conversion_rate` 的类型，应为小数而非整数
+   - `dragon_ability` 修正了 `transition_length` 的取值范围，游戏允许为 0
+   - 通过确认源代码纠正 `dragon_ability` 中 `harvest_bonus`、`item_conversion`、`use_item`、`dragon_growth` 等参数错误的默认值提示
+   - `dragon_body` 移除了游戏中已不存在的 `mounting_offset` 参数，骑乘位置现在由模型骨骼 `MountingBone` 决定
+   - `dragon_body` 修正了 `modifiers` 被错误设为可选的问题
+   - `dragon_body` 修正了 `crouch_height_ratio` 的取值范围，游戏允许 0~100 而非 0~1
+   - `dragon_stage` 修正了 `ticks_until_grown` 的最短值，游戏允许最短为 1 刻而非 20 刻
+   - `dragon_stage` 修正了 `maximum_usages` 的取值范围，游戏允许使用 -1 表示无限次
+   - `dragon_penalty` 补上了遗漏的缺陷效果 `dragonsurvival:informational`
+   - `dragon_penalty` 修正了 `dragonsurvival:item_blacklist` 的 `items` 被错误设为必填的问题
+   - `dragon_penalty` 修正了 `dragonsurvival:effect_modification` 的 `effects` 被错误设为可选的问题
+   - `dragon_penalty` 修正了 `dragonsurvival:damage_modification` 的 `damage_types` 被错误设为必填的问题
+   - `data_maps/dragonsurvival/dragon_species` 补上了遗漏的 `remove`，用于移除指定物种的数据（仅 `diet_entries` 与 `stage_resources` 支持）
+   - `data_maps/dragonsurvival/dragon_species` 修正了 `remove` 的错误写法，它应是「物种ID → 移除器值」的映射而非键列表
+   - `data_maps/dragonsurvival/dragon_species` 修正了 `dragon_beacon_data` 中 `duration` 的取值范围，游戏允许使用 -1 表示无限持续时间
+   - `projectile_data` 补上了遗漏的目标类型 `dragonsurvival:point`
+   - `projectile_data` 修正了 `entity_hit_condition` 被错误设为必填的问题
+   - `projectile_data` 修正了 `condition` 缺少数组写法的问题
+   - `projectile_data` 修正了 `area_cloud` 的 `probability` 类型，应为 LevelBasedValue 而非 0~1 的固定小数
+   - `projectile_data` 修正了 `from_level` 的取值范围为 0~255
+   - 通过确认源代码纠正 `projectile_data` 中 `tick_rate` 错误的默认值提示
+   - 自定义粒子 `dragonsurvival:treasure` 移除了颜色分量上游戏并不存在的范围限制
+   - 自定义粒子 `dragonsurvival:sea_sweep` 修正了 `quadSize` 的类型
+   - `predicate` 修正了 `ability_levels` 中 `ability` 被错误设为可选的问题
+   - `predicate` 修正了 `experience_orb` 与 `has_duration_effect` 的说明文字
+   - `trigger` 修正了 `convert_item_from_ability` 中 `item_from`与`item_to`的类型，应为物品ID而非物品堆
+   - `trigger` 修正了 `mine_block_under_lava` 的 `block`缺少标签与数组写法的问题
+   - 命令补全：补上了遗漏的命令 `dragon-body`与`dragon-riding-debug`
+   - 命令补全：补上了 `dragon-ability refresh` 遗漏的 `clear_storages`参数与自身的可执行状态
+   - 命令补全：`dragon` 的末级参数名应为 `targets`而非`target`
+   - 命令补全：`dragon-growth` 的末级参数名应为 `dragon_growth`且类型为小数，并移除了写死的取值范围
+   - 注册表ID补全：补上了 `entity_type` 中缺失的 8 个实体ID
+
 ## v2.0.4 - 2026-02-17
 > 该版本适用于 [DragonSurvival-1.21.1-v2.0.52-11.12.2025-all](https://www.curseforge.com/minecraft/mc-mods/dragons-survival/files/7320820) 版本及以上
 

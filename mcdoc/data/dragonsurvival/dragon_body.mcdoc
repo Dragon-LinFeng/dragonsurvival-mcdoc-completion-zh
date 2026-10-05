@@ -47,13 +47,18 @@ enum(string) Visibility {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-dispatch minecraft:resource[dragonsurvival:dragon_body] to struct DragonBody {
+dispatch minecraft:resource[dragonsurvival:dragon_body] to (
+    DragonBody |
+    DragonBodyWithoutModel |
+)
+
+struct DragonBody {
     /// 决定此身体是否是默认身体全局列表的一部分(默认：false)
     is_default?: boolean,
     /// 指定此身体的解锁条件及其在龙编辑器中的可见性
     unlockable_behavior?: UnlockableBehavior,
     /// 属性修饰符，始终以"等级"1计算
-    modifiers?: [Modifier],
+    modifiers: [Modifier],
     /// 决定翅膀是否可以隐藏
     /// (默认：true)
     can_hide_wings?: boolean,
@@ -76,13 +81,28 @@ dispatch minecraft:resource[dragonsurvival:dragon_body] to struct DragonBody {
     /// 高度和宽度尺寸如何计算(使用实体的当前比例)
     scaling_proportions: ScalingProportions,
     /// 决定下蹲时高度变化多少
-    crouch_height_ratio: double @ 0..1,
-    /// 决定骑乘者的放置位置
-    mounting_offset?: MountingOffsets,
+    crouch_height_ratio: double @ 0..100,
     /// 决定背包的放置位置(基础位置是骨骼'BackpackBone')
     backpack_offset?: BackpackOffsets,
     /// 与 Better Combat 模组兼容的武器位置偏移
     bettercombat_weapon_offset?: float,
+    /// 决定此身体是否可以骑乘
+    /// (默认：true)
+    rideable?: boolean,
+}
+
+/// 不使用自定义龙模型时的简化写法
+/// - 只允许以下四项(其中`modifiers`为必填)
+/// - 模型/动画/贴图大小/表情/缩放比例/下蹲比例都会使用默认值
+struct DragonBodyWithoutModel {
+    /// 决定此身体是否是默认身体全局列表的一部分(默认：false)
+    is_default?: boolean,
+    /// 指定此身体的解锁条件及其在龙编辑器中的可见性
+    unlockable_behavior?: UnlockableBehavior,
+    /// 属性修饰符，始终以"等级"1计算
+    modifiers: [Modifier],
+    /// 默认GUI图标，在当前物种没有特定图标时使用
+    default_icon?: #[id] string,
 }
 
 dispatch minecraft:resource[dragonsurvival:dragon_emote_set] to struct DragonEmoteSet {
@@ -106,22 +126,22 @@ struct DragonEmote {
     /// 动画持续时间
     duration?: int,
     /// 动画是否循环播放
-    /// (默认:fasle)
+    /// (默认:false)
     loops?: boolean,
     /// 动画是否允许与其他动画混合
-    /// (默认:fasle)
+    /// (默认:false)
     blend?: boolean,
     /// 该动画是否锁定头部
-    /// (默认:fasle)
+    /// (默认:false)
     locks_head?: boolean,
     /// 该动画是否锁定尾巴
-    /// (默认:fasle)
+    /// (默认:false)
     locks_tail?: boolean,
     /// 是否主要在第三人称下显示
-    /// (默认:fasle)
+    /// (默认:false)
     third_person?: boolean,
     /// 是否允许玩家在动画中移动
-    /// (默认:fasle)
+    /// (默认:false)
     can_move?: boolean,
     /// 动画所用音效
     sound?: Sound,
@@ -152,19 +172,10 @@ struct ScalingProportions {
     scale_multiplier?: double @ 0..,
     /// 阴影大小倍率
     /// (默认：1)
-    shadow_multiplier?: double @ 0..
-}
-
-struct MountingOffsets {
-    /// 人类骑乘位置偏移
-    /// (默认：[0, 0, 0])
-    human_offset?: [float] @ 3,
-    /// 龙类骑乘位置偏移
-    /// (默认：[0, 0, 0])
-    dragon_offset?: [float] @ 3,
-    /// 缩放相关的额外偏移
-    /// (默认：[0, 0, 0])
-    offset_per_scale_above_one?: [float] @ 3,
+    shadow_multiplier?: double @ 0..,
+    /// 攀爬天花板时的位置偏移倍率
+    /// (默认：1)
+    ceiling_climbing_offset_multiplier?: double @ -10..10,
 }
 
 struct BackpackOffsets {
